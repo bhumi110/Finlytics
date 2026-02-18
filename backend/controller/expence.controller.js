@@ -3,9 +3,51 @@ const { EXPENSE_STATUS } = require("../config/constants");
 const { validateTransition } = require("../utils/statusTransition");
 const { createAuditLog } = require("../services/audit.service");
 
+
+const { v4: uuidv4 } = require("uuid");
+
+/* CREATE EXPENSE (DRAFT) */
+exports.createExpense = async (req, res) => {
+  try {
+    const { amount, category, notes } = req.body;
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ message: "Amount must be greater than 0" });
+    }
+
+    if (!category) {
+      return res.status(400).json({ message: "Category is required" });
+    }
+
+    const expense = await Expense.create({
+      expenseId: uuidv4(),
+      employeeId: req.user.id,
+      managerId: req.user.managerId || null,
+      amount,
+      category,
+      notes,
+      status: EXPENSE_STATUS.DRAFT
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Expense created as draft",
+      expense
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+
+
 exports.submitExpense = async (req, res) => {
   try {
-    const expense = await Expense.findById(req.params.id);
+    const expense = await Expense.findOne({ expenseId: req.params.id });
 
     if (!expense)
       return res.status(404).json({ message: "Expense not found" });
@@ -34,7 +76,7 @@ exports.submitExpense = async (req, res) => {
 
 exports.managerApprove = async (req, res) => {
   try {
-    const expense = await Expense.findById(req.params.id);
+    const expense = await Expense.findOne({ expenseId: req.params.id });
 
     if (!expense)
       return res.status(404).json({ message: "Expense not found" });
@@ -68,7 +110,7 @@ exports.managerApprove = async (req, res) => {
 
 exports.financeApprove = async (req, res) => {
   try {
-    const expense = await Expense.findById(req.params.id);
+    const expense = await Expense.findOne({ expenseId: req.params.id });
 
     if (!validateTransition(expense.status, EXPENSE_STATUS.FINANCE_APPROVED)) {
       return res.status(400).json({ message: "Invalid transition" });
@@ -93,7 +135,7 @@ exports.financeApprove = async (req, res) => {
 
 exports.markAsPaid = async (req, res) => {
   try {
-    const expense = await Expense.findById(req.params.id);
+    const expense = await Expense.findOne({ expenseId: req.params.id });
 
     if (!validateTransition(expense.status, EXPENSE_STATUS.PAID)) {
       return res.status(400).json({ message: "Invalid transition" });

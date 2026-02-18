@@ -4,6 +4,16 @@ const expenseController = require("../controller/expence.controller");
 const { protect } = require("../middleware/auth.middleware");
 const { authorize } = require("../middleware/role.middleware");
 
+
+router.post(
+  "/create",
+  protect,
+  authorize("EMPLOYEE"),
+  expenseController.createExpense
+);
+
+
+
 /* Employee */
 router.put(
   "/submit/:id",
