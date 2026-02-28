@@ -1,14 +1,21 @@
 const Expense = require("../models/Expense");
+const User = require("../models/User");
 const { EXPENSE_STATUS } = require("../config/constants");
 const { validateTransition } = require("../utils/statusTransition");
 const { createAuditLog } = require("../services/audit.service");
-
-
 const { v4: uuidv4 } = require("uuid");
 
-/* CREATE EXPENSE (DRAFT) */
+
 exports.createExpense = async (req, res) => {
   try {
+    const user = await User.findById(req.user.id);
+
+    if (!user.managerId) {
+      return res.status(400).json({
+        message: "Manager not assigned yet"
+      });
+    }
+
     const { amount, category, notes } = req.body;
 
     if (!amount || amount <= 0) {
@@ -21,8 +28,8 @@ exports.createExpense = async (req, res) => {
 
     const expense = await Expense.create({
       expenseId: uuidv4(),
-      employeeId: req.user.id,
-      managerId: req.user.managerId || null,
+      employeeId: user._id,
+      managerId: user.managerId,
       amount,
       category,
       notes,
@@ -36,13 +43,9 @@ exports.createExpense = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
-
 
 
 exports.submitExpense = async (req, res) => {
@@ -51,6 +54,10 @@ exports.submitExpense = async (req, res) => {
 
     if (!expense)
       return res.status(404).json({ message: "Expense not found" });
+
+    if (expense.employeeId.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
 
     if (!validateTransition(expense.status, EXPENSE_STATUS.SUBMITTED)) {
       return res.status(400).json({ message: "Invalid status transition" });
@@ -74,6 +81,7 @@ exports.submitExpense = async (req, res) => {
   }
 };
 
+
 exports.managerApprove = async (req, res) => {
   try {
     const expense = await Expense.findOne({ expenseId: req.params.id });
@@ -81,9 +89,11 @@ exports.managerApprove = async (req, res) => {
     if (!expense)
       return res.status(404).json({ message: "Expense not found" });
 
-    // Manager cannot approve own expense
-    if (expense.employeeId.toString() === req.user.id) {
-      return res.status(403).json({ message: "Cannot approve own expense" });
+    // 🔒 Ensure this expense belongs to this manager
+    if (expense.managerId.toString() !== req.user.id) {
+      return res.status(403).json({
+        message: "Not authorized to approve this expense"
+      });
     }
 
     if (!validateTransition(expense.status, EXPENSE_STATUS.MANAGER_APPROVED)) {
@@ -108,9 +118,13 @@ exports.managerApprove = async (req, res) => {
   }
 };
 
+
 exports.financeApprove = async (req, res) => {
   try {
     const expense = await Expense.findOne({ expenseId: req.params.id });
+
+    if (!expense)
+      return res.status(404).json({ message: "Expense not found" });
 
     if (!validateTransition(expense.status, EXPENSE_STATUS.FINANCE_APPROVED)) {
       return res.status(400).json({ message: "Invalid transition" });
@@ -133,9 +147,14 @@ exports.financeApprove = async (req, res) => {
   }
 };
 
+
+
 exports.markAsPaid = async (req, res) => {
   try {
     const expense = await Expense.findOne({ expenseId: req.params.id });
+
+    if (!expense)
+      return res.status(404).json({ message: "Expense not found" });
 
     if (!validateTransition(expense.status, EXPENSE_STATUS.PAID)) {
       return res.status(400).json({ message: "Invalid transition" });
