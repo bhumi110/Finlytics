@@ -24,8 +24,9 @@ app.use("/employee", employeeRoutes);
 const managerRoutes = require("./routes/manager.routes");
 app.use("/manager", managerRoutes);
 
-
 app.use("/admin", require("./routes/admin.routes"));
+
+app.use("/finance",require("./routes/finance.routes"));
 
 app.get("/", (req, res) => {
   res.status(200).send("Finlytics API is running!!!!!!!");

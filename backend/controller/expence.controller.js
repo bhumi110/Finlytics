@@ -119,62 +119,62 @@ exports.managerApprove = async (req, res) => {
 };
 
 
-exports.financeApprove = async (req, res) => {
-  try {
-    const expense = await Expense.findOne({ expenseId: req.params.id });
+// exports.financeApprove = async (req, res) => {
+//   try {
+//     const expense = await Expense.findOne({ expenseId: req.params.id });
 
-    if (!expense)
-      return res.status(404).json({ message: "Expense not found" });
+//     if (!expense)
+//       return res.status(404).json({ message: "Expense not found" });
 
-    if (!validateTransition(expense.status, EXPENSE_STATUS.FINANCE_APPROVED)) {
-      return res.status(400).json({ message: "Invalid transition" });
-    }
+//     if (!validateTransition(expense.status, EXPENSE_STATUS.FINANCE_APPROVED)) {
+//       return res.status(400).json({ message: "Invalid transition" });
+//     }
 
-    expense.status = EXPENSE_STATUS.FINANCE_APPROVED;
-    await expense.save();
+//     expense.status = EXPENSE_STATUS.FINANCE_APPROVED;
+//     await expense.save();
 
-    await createAuditLog({
-      expenseId: expense._id,
-      action: "FINANCE_APPROVED",
-      performedBy: req.user.id,
-      role: req.user.role
-    });
+//     await createAuditLog({
+//       expenseId: expense._id,
+//       action: "FINANCE_APPROVED",
+//       performedBy: req.user.id,
+//       role: req.user.role
+//     });
 
-    res.json({ success: true, message: "Finance approved" });
+//     res.json({ success: true, message: "Finance approved" });
 
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 
 
-exports.markAsPaid = async (req, res) => {
-  try {
-    const expense = await Expense.findOne({ expenseId: req.params.id });
+// exports.markAsPaid = async (req, res) => {
+//   try {
+//     const expense = await Expense.findOne({ expenseId: req.params.id });
 
-    if (!expense)
-      return res.status(404).json({ message: "Expense not found" });
+//     if (!expense)
+//       return res.status(404).json({ message: "Expense not found" });
 
-    if (!validateTransition(expense.status, EXPENSE_STATUS.PAID)) {
-      return res.status(400).json({ message: "Invalid transition" });
-    }
+//     if (!validateTransition(expense.status, EXPENSE_STATUS.PAID)) {
+//       return res.status(400).json({ message: "Invalid transition" });
+//     }
 
-    expense.status = EXPENSE_STATUS.PAID;
-    expense.paidAt = new Date();
-    await expense.save();
+//     expense.status = EXPENSE_STATUS.PAID;
+//     expense.paidAt = new Date();
+//     await expense.save();
 
-    await createAuditLog({
-      expenseId: expense._id,
-      action: "PAID",
-      performedBy: req.user.id,
-      role: req.user.role
-    });
+//     await createAuditLog({
+//       expenseId: expense._id,
+//       action: "PAID",
+//       performedBy: req.user.id,
+//       role: req.user.role
+//     });
 
-    res.json({ success: true, message: "Marked as paid" });
+//     res.json({ success: true, message: "Marked as paid" });
 
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 

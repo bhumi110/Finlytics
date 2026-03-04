@@ -12,8 +12,6 @@ router.post(
   expenseController.createExpense
 );
 
-
-
 /* Employee */
 router.put(
   "/submit/:id",
@@ -30,19 +28,19 @@ router.put(
   expenseController.managerApprove
 );
 
-/* Finance */
-router.put(
-  "/finance-approve/:id",
-  protect,
-  authorize("FINANCE"),
-  expenseController.financeApprove
-);
+// Finance
+// router.put(
+//   "/finance-approve/:id",
+//   protect,
+//   authorize("FINANCE"),
+//   expenseController.financeApprove
+// );
 
-router.put(
-  "/mark-paid/:id",
-  protect,
-  authorize("FINANCE"),
-  expenseController.markAsPaid
-);
+// router.put(
+//   "/mark-paid/:id",
+//   protect,
+//   authorize("FINANCE"),
+//   expenseController.markAsPaid
+// );
 
 module.exports = router;
