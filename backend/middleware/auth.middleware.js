@@ -1,9 +1,16 @@
 const jwt = require("jsonwebtoken");
 
 exports.protect = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ success: false, message: "Unauthorized: No token provided" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ success: false, message: "Unauthorized: Malformed token" });
   }
 
   try {
@@ -11,6 +18,9 @@ exports.protect = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Invalid token" });
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ success: false, message: "Token expired" });
+    }
+    return res.status(401).json({ success: false, message: "Invalid token" });
   }
 };
