@@ -10,19 +10,32 @@ exports.createExpense = async (req, res, next) => {
     const user = await User.findById(req.user.id);
 
     if (!user.managerId) {
-      return res.status(400).json({ success: false, message: "You have no manager assigned yet. Contact an admin." });
+      return res.status(400).json({ message: "Manager not assigned yet" });
     }
 
     const { amount, category, notes } = req.body;
 
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ message: "Amount must be greater than 0" });
+    }
+
+    if (!category) {
+      return res.status(400).json({ message: "Category is required" });
+    }
+
+    const receiptUrl = req.file
+      ? `/uploads/${req.file.filename}`
+      : null;
+
     const expense = await Expense.create({
-      expenseId: uuidv4(),
+      expenseId:  uuidv4(),
       employeeId: user._id,
-      managerId: user.managerId,
+      managerId:  user.managerId,
       amount,
       category,
       notes,
-      status: EXPENSE_STATUS.DRAFT
+      receiptUrl,                // ← save it
+      status: EXPENSE_STATUS.DRAFT,
     });
 
     res.status(201).json({ success: true, message: "Expense created as draft", expense });

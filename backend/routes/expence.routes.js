@@ -4,12 +4,14 @@ const expenseController = require("../controller/expence.controller");
 const { protect } = require("../middleware/auth.middleware");
 const { authorize } = require("../middleware/role.middleware");
 const { validateCreateExpense } = require("../middleware/validate.middleware");
- 
+ const upload = require("../middleware/upload.middleware");
 router.post(
   "/create",
   protect,
   authorize("EMPLOYEE"),
+  upload.single("receipt"),
   validateCreateExpense,
+  
   expenseController.createExpense
 );
  

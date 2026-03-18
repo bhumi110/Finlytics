@@ -5,7 +5,9 @@ exports.getMyExpenses = async (req, res, next) => {
   try {
     const expenses = await Expense.find({
       employeeId: req.user.id
-    }).sort({ createdAt: -1 });
+    })
+    .populate("managerId", "name email")
+    .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -21,11 +23,12 @@ exports.getMyExpenses = async (req, res, next) => {
 
 exports.getExpenseDetails = async (req, res, next) => {
   try {
-    // Query by Mongo _id scoped to the requesting employee
     const expense = await Expense.findOne({
       _id: req.params.expenseId,
       employeeId: req.user.id
-    });
+    })
+    .populate("managerId", "name email") 
+    .populate("employeeId", "name email"); 
 
     if (!expense) {
       return res.status(404).json({ success: false, message: "Expense not found" });

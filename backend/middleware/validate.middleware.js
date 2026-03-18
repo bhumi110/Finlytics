@@ -45,13 +45,22 @@ exports.validateLogin = [
   validate
 ];
 
-const VALID_CATEGORIES = ["Travel", "Meals", "Office Supplies", "Software", "Training", "Other"];
+const VALID_CATEGORIES = [
+  "Travel",
+  "Meals",
+  "Hotel", 
+  "Office Supplies",
+  "Software",
+  "Training",
+  "Other"
+];
 
 exports.validateCreateExpense = [
   body("amount")
     .notEmpty().withMessage("Amount is required")
     .isFloat({ gt: 0 }).withMessage("Amount must be greater than 0")
-    .isFloat({ max: 100000 }).withMessage("Amount cannot exceed 100,000"),
+    .isFloat({ max: 100000 }).withMessage("Amount cannot exceed 100,000")
+    .toFloat(),
 
   body("category")
     .notEmpty().withMessage("Category is required")

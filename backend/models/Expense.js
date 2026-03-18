@@ -9,9 +9,8 @@ const expenseSchema = new mongoose.Schema({
 
   amount: Number,
   category: String,
-  receiptUrl: String,
   notes: String,
-
+receiptUrl: { type: String, default: null },
   status: {
     type: String,
     enum: Object.values(EXPENSE_STATUS),
@@ -20,7 +19,9 @@ const expenseSchema = new mongoose.Schema({
 
   policyFlags: [String],
   riskScore: Number,
-
+rejectedAt:      Date,
+rejectedBy:      { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+rejectionReason: String,
   submittedAt: Date,
   approvedAt: Date,
   paidAt: Date

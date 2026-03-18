@@ -1,0 +1,262 @@
+/* ══════════════════════════════════════════════════════
+   SUBMIT EXPENSE PAGE
+══════════════════════════════════════════════════════ */
+
+.submit-header { margin-bottom: 26px; }
+
+.submit-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-1);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+
+.submit-subtitle {
+  font-size: 0.855rem;
+  color: var(--text-3);
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+/* ── Form Card ───────────────────────────── */
+.submit-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 30px 34px;
+  max-width: 640px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--t);
+}
+
+.submit-card:focus-within {
+  box-shadow: var(--shadow-md);
+}
+
+.submit-card-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-1);
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.submit-field { margin-bottom: 20px; }
+
+.submit-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+
+.submit-label .req { color: var(--red); margin-left: 2px; }
+.submit-label .opt {
+  color: var(--text-4);
+  font-weight: 400;
+  font-size: 0.775rem;
+  margin-left: 4px;
+}
+
+.submit-input,
+.submit-select,
+.submit-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+  color: var(--text-1);
+  background: #fafbfe;
+  transition: all var(--t);
+}
+
+.submit-input:focus,
+.submit-select:focus,
+.submit-textarea:focus {
+  border-color: var(--brand);
+  background: #fff;
+  box-shadow: 0 0 0 3.5px rgba(37,99,235,0.08);
+}
+
+.submit-input:hover:not(:focus),
+.submit-select:hover:not(:focus),
+.submit-textarea:hover:not(:focus) {
+  border-color: var(--border-hover);
+}
+
+.submit-input::placeholder,
+.submit-textarea::placeholder { color: var(--text-4); }
+
+.submit-textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+/* ── Row layout for side-by-side fields ─── */
+.submit-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ── Receipt Upload ──────────────────────── */
+.submit-receipt {
+  border: 2px dashed var(--border);
+  border-radius: var(--r-md);
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  background: #fafbfe;
+  transition: all var(--t);
+  position: relative;
+}
+
+.submit-receipt:hover {
+  border-color: var(--brand);
+  background: var(--brand-light);
+}
+
+.submit-receipt.uploaded {
+  border-style: solid;
+  border-color: var(--green);
+  background: var(--green-bg);
+}
+
+.submit-receipt.drag-over {
+  border-color: var(--brand);
+  background: var(--brand-light);
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.08);
+}
+
+.submit-receipt-icon {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  opacity: 0.45;
+  display: block;
+}
+
+.submit-receipt-text {
+  font-size: 0.875rem;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.submit-receipt-hint {
+  font-size: 0.775rem;
+  color: var(--text-3);
+  margin-top: 5px;
+}
+
+.submit-receipt-ok  {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.submit-receipt-size {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+
+.submit-field-error {
+  color: var(--red);
+  font-size: 0.775rem;
+  margin-top: 5px;
+  display: block;
+}
+
+/* ── Action Buttons ──────────────────────── */
+.submit-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.submit-btn-draft {
+  flex: 1;
+  padding: 11px;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--text-2);
+  transition: all var(--t);
+}
+
+.submit-btn-draft:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+  background: var(--brand-light);
+}
+
+.submit-btn-submit {
+  flex: 1;
+  padding: 11px;
+  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  color: #fff;
+  border: none;
+  border-radius: var(--r-md);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--t);
+  box-shadow: 0 3px 12px rgba(37,99,235,0.26);
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn-submit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
+}
+
+.submit-btn-submit:hover    { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.35); }
+.submit-btn-submit:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; }
+
+.submit-error {
+  background: var(--red-bg);
+  color: var(--red);
+  border: 1px solid var(--red-border);
+  border-radius: var(--r-md);
+  padding: 11px 14px;
+  font-size: 0.855rem;
+  margin-bottom: 20px;
+  font-weight: 500;
+  animation: alertIn 0.25s ease;
+}
+
+@keyframes alertIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ──────────────────────────── */
+@media (max-width: 640px) {
+  .submit-card   { padding: 22px 20px; }
+  .submit-row    { grid-template-columns: 1fr; gap: 0; }
+  .submit-actions { flex-direction: column-reverse; }
+  .submit-btn-draft,
+  .submit-btn-submit { flex: none; width: 100%; }
+}

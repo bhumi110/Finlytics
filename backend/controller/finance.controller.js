@@ -6,7 +6,7 @@ const { createAuditLog } = require("../services/audit.service");
 exports.getPendingFinanceExpenses = async (req, res, next) => {
   try {
     const expenses = await Expense.find({
-      status: EXPENSE_STATUS.MANAGER_APPROVED
+      status: { $in: [EXPENSE_STATUS.MANAGER_APPROVED, EXPENSE_STATUS.FINANCE_APPROVED] }  // ← changed
     }).populate("employeeId", "name email");
 
     res.json({ success: true, count: expenses.length, expenses });

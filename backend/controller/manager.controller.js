@@ -8,7 +8,9 @@ exports.getPendingApprovals = async (req, res, next) => {
     const expenses = await Expense.find({
       managerId: req.user.id,
       status: EXPENSE_STATUS.SUBMITTED
-    }).sort({ submittedAt: -1 });
+    })
+    .populate("employeeId", "name email")
+    .sort({ submittedAt: -1 });
 
     res.status(200).json({ success: true, count: expenses.length, expenses });
 
@@ -27,10 +29,12 @@ exports.getApprovalHistory = async (req, res, next) => {
           EXPENSE_STATUS.MANAGER_APPROVED,
           EXPENSE_STATUS.FINANCE_APPROVED,
           EXPENSE_STATUS.PAID,
-          EXPENSE_STATUS.REJECTED   // ← include rejected so managers see full history
+          EXPENSE_STATUS.REJECTED
         ]
       }
-    }).sort({ updatedAt: -1 });
+    })
+    .populate("employeeId", "name email")
+    .sort({ updatedAt: -1 });
 
     res.status(200).json({ success: true, count: expenses.length, expenses });
 
