@@ -1,142 +1,98 @@
-
+/* ══════════════════════════════════════════════════════
+   USER MANAGEMENT PAGE  v2
+══════════════════════════════════════════════════════ */
 
 .usermgmt-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 26px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 16px;
 }
 
 .usermgmt-title {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: var(--text-1);
-  letter-spacing: -0.4px;
+  letter-spacing: -0.5px;
   line-height: 1.2;
 }
 
 .usermgmt-subtitle {
-  font-size: 0.855rem;
-  color: var(--text-3);
-  margin-top: 4px;
-  font-weight: 400;
-}
-
-/* Keep backward compat with .paid- class names used in usermanagement.css */
-.paid-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 26px;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-
-.paid-title {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--text-1);
-  letter-spacing: -0.4px;
-  line-height: 1.2;
-}
-
-.paid-subtitle {
-  font-size: 0.855rem;
-  color: var(--text-3);
-  margin-top: 4px;
-  font-weight: 400;
-}
-
-.paid-total {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--green-bg);
-  border: 1px solid var(--green-border);
-  border-radius: var(--r-md);
-  padding: 9px 16px;
   font-size: 0.875rem;
-  color: var(--green);
-  font-weight: 600;
-  box-shadow: 0 1px 4px var(--green-glow);
-  white-space: nowrap;
-}
-
-.paid-total strong { font-weight: 800; }
-
-.paid-error {
-  background: var(--red-bg);
-  color: var(--red);
-  border: 1px solid var(--red-border);
-  border-radius: var(--r-md);
-  padding: 12px 16px;
-  font-size: 0.855rem;
-  margin-bottom: 18px;
-  font-weight: 500;
-  animation: alertIn 0.25s ease;
+  color: var(--text-3);
+  margin-top: 5px;
+  font-weight: 400;
 }
 
 /* ── User Avatar cell ─────────────────────── */
 .user-cell {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
 }
 
 .user-avatar-sm {
-  width: 32px; height: 32px;
-  border-radius: 9px;
-  background: var(--brand-subtle);
-  color: var(--brand);
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--brand-light), var(--brand-subtle));
+  color: var(--brand-dark);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.71rem;
   font-weight: 800;
   flex-shrink: 0;
-  border: 1px solid var(--brand-light);
+  border: 1px solid var(--brand-subtle);
   letter-spacing: -0.5px;
+  box-shadow: var(--shadow-xs);
 }
 
 .user-name {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-1);
-  font-size: 0.875rem;
+  font-size: 0.9rem;
+  line-height: 1.3;
 }
 
 .user-email {
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   color: var(--text-3);
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
 /* ── Role select inline ───────────────────── */
 .role-select {
-  padding: 5px 10px;
+  padding: 6px 11px;
   border: 1.5px solid var(--border);
   border-radius: var(--r-sm);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-family: inherit;
   outline: none;
   background: var(--white);
   color: var(--text-2);
   cursor: pointer;
   transition: all var(--t);
+  font-weight: 500;
+}
+
+.role-select:hover:not(:focus) {
+  border-color: var(--border-hover);
 }
 
 .role-select:focus {
   border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+  box-shadow: 0 0 0 3px var(--brand-glow);
 }
 
 /* ── Invite / Edit modal shared styles ────── */
 .usermgmt-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(12,21,36,0.5);
-  backdrop-filter: blur(5px);
+  background: rgba(10,14,28,0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -153,82 +109,116 @@
 .usermgmt-modal {
   background: var(--white);
   border-radius: var(--r-xl);
-  padding: 30px;
+  padding: 32px;
   width: 100%;
-  max-width: 420px;
+  max-width: 430px;
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--border);
-  animation: modalSlideUp 0.22s cubic-bezier(0.34,1.2,0.64,1);
+  animation: modalSlideUp 0.24s cubic-bezier(0.34,1.2,0.64,1);
 }
 
 @keyframes modalSlideUp {
-  from { opacity: 0; transform: scale(0.96) translateY(10px); }
+  from { opacity: 0; transform: scale(0.96) translateY(12px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .usermgmt-modal-title {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: var(--text-1);
-  margin-bottom: 6px;
+  margin-bottom: 7px;
   letter-spacing: -0.2px;
 }
 
 .usermgmt-modal-desc {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: var(--text-3);
-  margin-bottom: 20px;
-  line-height: 1.65;
+  margin-bottom: 22px;
+  line-height: 1.7;
 }
 
-.usermgmt-field { margin-bottom: 16px; }
+.usermgmt-field { margin-bottom: 18px; }
 
 .usermgmt-label {
   display: block;
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 600;
   color: var(--text-2);
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 
 .usermgmt-input,
 .usermgmt-select {
   width: 100%;
-  padding: 10px 14px;
+  padding: 11px 15px;
   border: 1.5px solid var(--border);
   border-radius: var(--r-md);
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-family: inherit;
   outline: none;
   color: var(--text-1);
-  background: #fafbfe;
+  background: var(--surface-2);
   transition: all var(--t);
+}
+
+.usermgmt-input:hover:not(:focus),
+.usermgmt-select:hover:not(:focus) {
+  border-color: var(--border-hover);
 }
 
 .usermgmt-input:focus,
 .usermgmt-select:focus {
   border-color: var(--brand);
   background: #fff;
-  box-shadow: 0 0 0 3.5px rgba(37,99,235,0.08);
+  box-shadow: 0 0 0 4px var(--brand-glow);
 }
 
 .usermgmt-modal-actions {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
-  margin-top: 22px;
-  padding-top: 18px;
+  margin-top: 24px;
+  padding-top: 20px;
   border-top: 1px solid var(--border-soft);
 }
 
+/* Alert in user management */
+.usermgmt-alert-success {
+  background: var(--green-bg);
+  color: var(--green-dark);
+  border: 1px solid var(--green-border);
+  border-left: 3px solid var(--green);
+  border-radius: var(--r-md);
+  padding: 13px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px var(--green-glow);
+  animation: alertIn 0.25s ease;
+}
+
+.usermgmt-alert-error {
+  background: var(--red-bg);
+  color: var(--red-dark);
+  border: 1px solid var(--red-border);
+  border-left: 3px solid var(--red);
+  border-radius: var(--r-md);
+  padding: 13px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px var(--red-glow);
+  animation: alertIn 0.25s ease;
+}
+
 @keyframes alertIn {
-  from { opacity: 0; transform: translateY(-5px); }
+  from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Responsive ──────────────────────────── */
 @media (max-width: 520px) {
-  .paid-header           { gap: 10px; }
-  .usermgmt-modal        { padding: 24px 20px; }
+  .usermgmt-header        { gap: 10px; }
+  .usermgmt-modal         { padding: 26px 20px; }
   .usermgmt-modal-actions { flex-direction: column-reverse; }
 }

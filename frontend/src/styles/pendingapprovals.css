@@ -1,21 +1,21 @@
 /* ══════════════════════════════════════════════════════
-   PENDING APPROVALS (Manager)
+   PENDING APPROVALS (Manager)  v2
 ══════════════════════════════════════════════════════ */
 
-.pending-header { margin-bottom: 26px; }
+.pending-header { margin-bottom: 28px; }
 
 .pending-title {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: var(--text-1);
-  letter-spacing: -0.4px;
+  letter-spacing: -0.5px;
   line-height: 1.2;
 }
 
 .pending-subtitle {
-  font-size: 0.855rem;
+  font-size: 0.875rem;
   color: var(--text-3);
-  margin-top: 4px;
+  margin-top: 5px;
   font-weight: 400;
 }
 
@@ -23,9 +23,9 @@
 .reject-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(12,21,36,0.5);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: rgba(10,14,28,0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,66 +42,66 @@
 .reject-modal {
   background: var(--white);
   border-radius: var(--r-xl);
-  padding: 30px;
+  padding: 32px;
   width: 100%;
-  max-width: 448px;
+  max-width: 460px;
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--border);
-  animation: modalSlideUp 0.22s cubic-bezier(0.34,1.2,0.64,1);
+  animation: modalSlideUp 0.24s cubic-bezier(0.34,1.2,0.64,1);
 }
 
 @keyframes modalSlideUp {
-  from { opacity: 0; transform: scale(0.96) translateY(10px); }
+  from { opacity: 0; transform: scale(0.96) translateY(12px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .reject-modal-icon {
-  width: 44px; height: 44px;
-  border-radius: 12px;
+  width: 48px; height: 48px;
+  border-radius: 14px;
   background: var(--red-bg);
   border: 1px solid var(--red-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
-  margin-bottom: 16px;
+  font-size: 1.2rem;
+  margin-bottom: 18px;
 }
 
 .reject-modal-title {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: var(--text-1);
-  margin-bottom: 6px;
+  margin-bottom: 7px;
   letter-spacing: -0.2px;
 }
 
 .reject-modal-desc {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: var(--text-3);
-  margin-bottom: 18px;
-  line-height: 1.65;
+  margin-bottom: 20px;
+  line-height: 1.7;
 }
 
 .reject-modal-textarea {
   width: 100%;
-  padding: 11px 14px;
+  padding: 12px 15px;
   border: 1.5px solid var(--border);
   border-radius: var(--r-md);
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-family: inherit;
   outline: none;
   resize: vertical;
-  min-height: 100px;
-  margin-bottom: 20px;
+  min-height: 104px;
+  margin-bottom: 22px;
   color: var(--text-1);
-  background: #fafbfe;
+  background: var(--surface-2);
   transition: all var(--t);
 }
 
 .reject-modal-textarea:focus {
   border-color: var(--red);
   background: #fff;
-  box-shadow: 0 0 0 3.5px rgba(220,38,38,0.08);
+  box-shadow: 0 0 0 4px var(--red-glow);
 }
 
 .reject-modal-actions {
@@ -114,8 +114,8 @@
   background: none;
   border: 1.5px solid var(--border);
   border-radius: var(--r-md);
-  padding: 8px 18px;
-  font-size: 0.855rem;
+  padding: 9px 20px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
@@ -125,7 +125,7 @@
 
 .btn-cancel:hover {
   border-color: var(--border-hover);
-  background: var(--border-soft);
+  background: var(--surface-3);
 }
 
 .btn-confirm-reject {
@@ -133,21 +133,22 @@
   color: #fff;
   border: none;
   border-radius: var(--r-md);
-  padding: 8px 18px;
-  font-size: 0.855rem;
+  padding: 9px 20px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
   transition: all var(--t);
-  box-shadow: 0 2px 10px rgba(220,38,38,0.28);
+  box-shadow: var(--shadow-red);
 }
 
-.btn-confirm-reject:hover    { background: #b91c1c; box-shadow: 0 4px 14px rgba(220,38,38,0.36); }
-.btn-confirm-reject:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
+.btn-confirm-reject:hover    { background: var(--red-dark); box-shadow: 0 6px 18px var(--red-glow); }
+.btn-confirm-reject:disabled { background: #d1d5e0; box-shadow: none; cursor: not-allowed; }
 
 /* ── Responsive ──────────────────────────── */
 @media (max-width: 520px) {
-  .reject-modal                { padding: 24px 20px; }
-  .reject-modal-actions        { flex-direction: column-reverse; }
-  .btn-cancel, .btn-confirm-reject { width: 100%; text-align: center; }
+  .reject-modal           { padding: 26px 20px; }
+  .reject-modal-actions   { flex-direction: column-reverse; }
+  .btn-cancel,
+  .btn-confirm-reject     { width: 100%; text-align: center; }
 }

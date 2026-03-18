@@ -1,33 +1,33 @@
 /* ══════════════════════════════════════════════════════
-   DASHBOARD — Stat Cards, Tables, Buttons
+   DASHBOARD — Stat Cards · Tables · Buttons  v4
 ══════════════════════════════════════════════════════ */
 
-/* ── Page Header Row ─────────────────────── */
+/* ── Page Header ─────────────────────────── */
 .dash-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 26px;
-  gap: 16px;
+  margin-bottom: 22px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .dash-title {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 800;
   color: var(--text-1);
-  letter-spacing: -0.4px;
+  letter-spacing: -0.5px;
   line-height: 1.2;
 }
 
 .dash-subtitle {
-  font-size: 0.855rem;
+  font-size: 0.875rem;
   color: var(--text-3);
   margin-top: 4px;
   font-weight: 400;
 }
 
-/* ── Primary Action Button ───────────────── */
+/* ── Primary Button ──────────────────────── */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -36,71 +36,67 @@
   color: #fff;
   border: none;
   border-radius: var(--r-md);
-  padding: 9px 18px;
-  font-size: 0.855rem;
+  padding: 10px 20px;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
   transition: all var(--t);
   white-space: nowrap;
   box-shadow: var(--shadow-brand);
-  letter-spacing: 0.05px;
 }
 
-.btn-primary:hover {
-  background: var(--brand-dark);
-  box-shadow: 0 6px 24px rgba(37,99,235,0.3);
-  transform: translateY(-1px);
-}
-
-.btn-primary:active { transform: translateY(0); box-shadow: var(--shadow-brand); }
+.btn-primary:hover    { background: var(--brand-dark); transform: translateY(-1px); box-shadow: 0 8px 26px rgba(79,70,229,0.36); }
+.btn-primary:active   { transform: translateY(0); }
 
 /* ── Stat Cards Grid ─────────────────────── */
 .stat-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
+  /*
+    Always use 2 columns on mobile, up to 4 on wide screens.
+    minmax(0,1fr) is key — prevents cards from overflowing their column.
+  */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
 }
 
 .stat-card {
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  padding: 22px 24px;
+  padding: 18px 16px 16px;
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--t), transform var(--t);
   position: relative;
   overflow: hidden;
+  min-width: 0;   /* flex/grid child must be able to shrink */
 }
 
-.stat-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
+.stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
 
-/* Coloured top accent bar */
-.stat-card:nth-child(1)::before { background: var(--brand); }
-.stat-card:nth-child(2)::before { background: var(--amber); }
-.stat-card:nth-child(3)::before { background: var(--green); }
-.stat-card:nth-child(4)::before { background: var(--purple); }
-
+/* Bold left border accent */
 .stat-card::before {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  top: 0; left: 0; bottom: 0;
+  width: 4px;
+  border-radius: var(--r-lg) 0 0 var(--r-lg);
 }
 
-/* Soft glow orb in corner */
+.stat-card:nth-child(1)::before { background: linear-gradient(180deg, var(--brand),  var(--brand-med)); }
+.stat-card:nth-child(2)::before { background: linear-gradient(180deg, var(--amber),  var(--amber-dark)); }
+.stat-card:nth-child(3)::before { background: linear-gradient(180deg, var(--green),  var(--green-dark)); }
+.stat-card:nth-child(4)::before { background: linear-gradient(180deg, var(--purple), var(--purple-dark)); }
+
+/* Corner glow orb */
 .stat-card::after {
   content: "";
   position: absolute;
   bottom: -28px; right: -28px;
-  width: 90px; height: 90px;
+  width: 80px; height: 80px;
   border-radius: 50%;
-  opacity: 0.06;
+  opacity: 0.07;
   pointer-events: none;
 }
 
@@ -110,31 +106,38 @@
 .stat-card:nth-child(4)::after { background: var(--purple); }
 
 .stat-card-label {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.9px;
   color: var(--text-3);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  /* prevent label overflow on narrow cards */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .stat-card-value {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 800;
   color: var(--text-1);
   line-height: 1;
-  letter-spacing: -0.6px;
+  letter-spacing: -0.5px;
+  /* allow rupee + large numbers to wrap rather than overflow */
+  word-break: break-all;
+  overflow-wrap: break-word;
 }
 
 .stat-card-delta {
-  font-size: 0.775rem;
+  font-size: 0.77rem;
   font-weight: 600;
   margin-top: 8px;
   color: var(--text-3);
 }
 
-.stat-card-delta.up   { color: var(--green); }
-.stat-card-delta.down { color: var(--red); }
+.stat-card-delta.up   { color: var(--green-dark); }
+.stat-card-delta.down { color: var(--red-dark); }
 
 /* ── Table Card ──────────────────────────── */
 .table-card {
@@ -143,8 +146,9 @@
   border-radius: var(--r-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  margin-bottom: 24px;
+  margin-bottom: 22px;
   transition: box-shadow var(--t);
+  /* DO NOT add overflow:hidden here globally — it clips the scroll */
 }
 
 .table-card:hover { box-shadow: var(--shadow-md); }
@@ -153,67 +157,81 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 22px;
+  padding: 14px 18px;
   border-bottom: 1px solid var(--border-soft);
-  background: #fafcff;
+  background: linear-gradient(135deg, #fafbff 0%, #f6f8ff 100%);
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .table-card-title {
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 700;
   color: var(--text-1);
   margin: 0;
 }
+
+/* ── SCROLL WRAPPER — this is what makes tables work on mobile ── */
+.table-scroll-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #c5cad8 transparent;
+}
+
+.table-scroll-wrap::-webkit-scrollbar       { height: 4px; }
+.table-scroll-wrap::-webkit-scrollbar-track { background: transparent; }
+.table-scroll-wrap::-webkit-scrollbar-thumb { background: #c5cad8; border-radius: 99px; }
 
 /* ── Data Table ──────────────────────────── */
 .data-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
+  /*
+    min-width ensures columns don't collapse below readable size.
+    The scroll wrapper handles overflow.
+  */
+  min-width: 500px;
 }
 
 .data-table th {
-  padding: 11px 22px;
+  padding: 10px 16px;
   text-align: left;
   font-size: 0.67rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.9px;
   color: var(--text-3);
-  background: #fafcff;
+  background: linear-gradient(135deg, #fafbff 0%, #f6f8ff 100%);
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
 
 .data-table td {
-  padding: 13px 22px;
+  padding: 13px 16px;
   border-bottom: 1px solid var(--border-soft);
   color: var(--text-2);
   vertical-align: middle;
 }
 
 .data-table tr:last-child td { border-bottom: none; }
-
-.data-table tbody tr {
-  transition: background var(--t);
-}
-
-.data-table tbody tr:hover td {
-  background: #f6f9ff;
-}
+.data-table tbody tr { transition: background var(--t); }
+.data-table tbody tr:hover td { background: #f5f7ff; }
 
 /* Empty state */
 .table-empty {
   text-align: center;
-  padding: 56px 24px;
+  padding: 52px 24px;
   color: var(--text-3);
-  font-size: 0.875rem;
+  font-size: 0.9rem;
 }
 
 .table-empty-icon {
-  font-size: 2rem;
-  margin-bottom: 10px;
-  opacity: 0.4;
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  opacity: 0.35;
+  display: block;
 }
 
 /* ── Table Buttons ───────────────────────── */
@@ -222,10 +240,10 @@
   align-items: center;
   gap: 4px;
   background: var(--white);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: var(--r-sm);
-  padding: 5px 11px;
-  font-size: 0.775rem;
+  padding: 5px 10px;
+  font-size: 0.77rem;
   font-weight: 600;
   cursor: pointer;
   color: var(--text-2);
@@ -234,44 +252,30 @@
   white-space: nowrap;
 }
 
-.table-btn:hover {
-  border-color: var(--brand);
-  color: var(--brand);
-  background: var(--brand-light);
-}
+.table-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
 
 .table-btn.approve {
-  border-color: var(--green-border);
-  color: var(--green);
-  background: var(--green-bg);
+  border-color: var(--green-border); color: var(--green-dark); background: var(--green-bg);
 }
-
 .table-btn.approve:hover {
-  background: var(--green);
-  color: #fff;
-  border-color: var(--green);
-  box-shadow: 0 2px 8px rgba(22,163,74,0.25);
+  background: var(--green); color: #fff; border-color: var(--green);
+  box-shadow: 0 2px 8px var(--green-glow);
 }
 
 .table-btn.reject {
-  border-color: var(--red-border);
-  color: var(--red);
-  background: var(--red-bg);
+  border-color: var(--red-border); color: var(--red-dark); background: var(--red-bg);
 }
-
 .table-btn.reject:hover {
-  background: var(--red);
-  color: #fff;
-  border-color: var(--red);
-  box-shadow: 0 2px 8px rgba(220,38,38,0.22);
+  background: var(--red); color: #fff; border-color: var(--red);
+  box-shadow: 0 2px 8px var(--red-glow);
 }
 
-/* ── Section header w/ badge ─────────────── */
+/* ── Section label + badge ───────────────── */
 .section-label {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--text-1);
   margin-bottom: 14px;
@@ -289,22 +293,71 @@
   font-weight: 700;
 }
 
-.count-badge.blue   { background: var(--brand-subtle); color: var(--brand); }
-.count-badge.green  { background: var(--green-bg);     color: var(--green); }
-.count-badge.amber  { background: var(--amber-bg);     color: var(--amber); }
-.count-badge.red    { background: var(--red-bg);       color: var(--red); }
+.count-badge.blue   { background: var(--brand-subtle);  color: var(--brand-dark); }
+.count-badge.green  { background: var(--green-bg);      color: var(--green-dark); }
+.count-badge.amber  { background: var(--amber-bg);      color: var(--amber-dark); }
+.count-badge.red    { background: var(--red-bg);        color: var(--red-dark); }
 
-/* ── Responsive ──────────────────────────── */
-@media (max-width: 640px) {
-  .stat-cards          { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .stat-card           { padding: 16px 18px; }
-  .stat-card-value     { font-size: 1.6rem; }
-  .table-card-header   { padding: 12px 16px; }
-  .data-table th,
-  .data-table td       { padding: 11px 16px; }
-  .dash-header         { gap: 10px; }
+/* ── Tab bar (Pending / History) ─────────── */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  padding: 12px 18px 0;
+  border-bottom: 1px solid var(--border-soft);
+  background: linear-gradient(135deg, #fafbff, #f6f8ff);
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-@media (max-width: 420px) {
-  .stat-cards          { grid-template-columns: 1fr; }
+.tab-bar::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  padding: 8px 14px;
+  font-size: 0.855rem;
+  font-weight: 600;
+  color: var(--text-3);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: color var(--t), border-color var(--t);
+  margin-bottom: -1px;
+}
+
+.tab-btn:hover        { color: var(--brand); }
+.tab-btn.active       { color: var(--brand); border-bottom-color: var(--brand); font-weight: 700; }
+
+/* ── Responsive ──────────────────────────── */
+
+/* Wide desktop: 4-col */
+@media (min-width: 1200px) {
+  .stat-cards { grid-template-columns: repeat(4, minmax(0,1fr)); gap: 18px; }
+  .stat-card-value { font-size: 2rem; }
+}
+
+/* Tablet: 2-col but bigger cards */
+@media (min-width: 641px) and (max-width: 1199px) {
+  .stat-cards      { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+  .stat-card       { padding: 20px 18px 18px; }
+  .stat-card-value { font-size: 1.9rem; }
+}
+
+/* Mobile: always 2-col, compact */
+@media (max-width: 640px) {
+  .stat-cards      { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+  .stat-card       { padding: 16px 14px 14px; }
+  .stat-card-value { font-size: 1.5rem; }
+  .stat-card-label { font-size: 0.62rem; }
+  .table-card-header { padding: 12px 14px; }
+  .data-table th,
+  .data-table td   { padding: 11px 12px; }
+  .dash-header     { gap: 8px; }
+}
+
+/* Very small: still 2-col */
+@media (max-width: 360px) {
+  .stat-card-value { font-size: 1.35rem; }
+  .stat-card-label { letter-spacing: 0.4px; }
 }
