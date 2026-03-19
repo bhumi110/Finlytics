@@ -58,7 +58,6 @@ const Login = () => {
           </div>
         </div>
 
-        <div className="login-watermark">FINLYTICS · v2.0</div>
       </div>
 
       {/* ── Right Panel — Form ── */}
