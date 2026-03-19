@@ -30,7 +30,8 @@ const Login = () => {
 
   return (
     <div className="login-page">
-      {/* Left — Brand */}
+
+      {/* ── Left Panel — Brand Stage ── */}
       <div className="login-left">
         <div className="login-brand">
           <div className="login-brand-icon">F</div>
@@ -40,32 +41,65 @@ const Login = () => {
             Multi-level approvals, audit trails,<br />
             and real-time reimbursements.
           </div>
+
+          <div className="login-stats">
+            <div className="login-stat">
+              <span className="login-stat-dot" />
+              <span className="login-stat-text"><strong>Multi-level</strong> approval workflows</span>
+            </div>
+            <div className="login-stat">
+              <span className="login-stat-dot" />
+              <span className="login-stat-text"><strong>Real-time</strong> reimbursement tracking</span>
+            </div>
+            <div className="login-stat">
+              <span className="login-stat-dot" />
+              <span className="login-stat-text"><strong>Audit trails</strong> for every transaction</span>
+            </div>
+          </div>
         </div>
+
+        <div className="login-watermark">FINLYTICS · v2.0</div>
       </div>
 
-      {/* Right — Form */}
+      {/* ── Right Panel — Form ── */}
       <div className="login-right">
         <div className="login-form-wrap">
+
+          {/* Mobile brand (hidden on desktop) */}
+          <div className="login-mobile-brand">
+            <div className="login-mobile-brand-icon">F</div>
+            <div className="login-mobile-brand-name">Finlytics</div>
+          </div>
+
           <div className="login-heading">Welcome back</div>
           <div className="login-subheading">Sign in to your account to continue</div>
 
           {error && <div className="login-error">{error}</div>}
 
           <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: 16 }}>
+            <div style={{ marginBottom: 18 }}>
               <label className="login-label">Email Address</label>
-              <input className="login-input" type="email"
+              <input
+                className="login-input"
+                type="email"
                 placeholder="you@company.com"
-                value={email} onChange={(e) => { setEmail(e.target.value); setError(""); }} />
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setError(""); }}
+              />
             </div>
-            <div style={{ marginBottom: 20 }}>
+            <div style={{ marginBottom: 24 }}>
               <label className="login-label">Password</label>
-              <input className="login-input" type="password"
+              <input
+                className="login-input"
+                type="password"
                 placeholder="Enter your password"
-                value={password} onChange={(e) => { setPassword(e.target.value); setError(""); }} />
+                value={password}
+                onChange={(e) => { setPassword(e.target.value); setError(""); }}
+              />
             </div>
+
             <button className="login-btn" type="submit" disabled={loading}>
-              {loading ? "Signing in..." : "Sign In →"}
+              {loading ? "Signing in…" : "Sign In →"}
             </button>
           </form>
 
@@ -74,6 +108,7 @@ const Login = () => {
           </p>
         </div>
       </div>
+
     </div>
   );
 };

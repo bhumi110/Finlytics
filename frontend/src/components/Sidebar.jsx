@@ -36,28 +36,23 @@ const Sidebar = () => {
   const navigate         = useNavigate();
   const location         = useLocation();
 
-  const [open, setOpen]       = useState(false);
+  const [open, setOpen]         = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
-  // Track viewport size
   useEffect(() => {
     const onResize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
-      // On desktop always open; on mobile start closed
       if (!mobile) setOpen(true);
       else setOpen(false);
     };
-    // Set initial state correctly
     const mobile = window.innerWidth < 1024;
     setIsMobile(mobile);
-    setOpen(!mobile); // open on desktop, closed on mobile
-
+    setOpen(!mobile);
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // Close sidebar when navigating on mobile
   useEffect(() => {
     if (isMobile) setOpen(false);
   }, [location.pathname, isMobile]);
@@ -66,25 +61,24 @@ const Sidebar = () => {
   const initials = user?.name
     ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
     : "?";
-
-  // On desktop sidebar is always open — ignore open state
   const isVisible = !isMobile || open;
 
   return (
     <>
-      {/* ── Sidebar panel ── */}
       <aside
         className={`sidebar ${isVisible ? "sidebar-open" : "sidebar-closed"}`}
         aria-label="Main navigation"
       >
-        {/* Brand row — hamburger button ONLY shown on mobile, lives at top of sidebar */}
+        {/* Diagonal stripe texture overlay */}
+        <div className="sidebar-texture" aria-hidden="true" />
+
+        {/* Brand */}
         <div className="sidebar-brand">
           <div className="sidebar-brand-icon" aria-hidden="true">F</div>
           <div className="sidebar-brand-wrap">
             <span className="sidebar-brand-text">Finlytics</span>
             <span className="sidebar-brand-sub">Expense Platform</span>
           </div>
-          {/* Mobile close button — top-right of sidebar */}
           {isMobile && (
             <button
               className="sidebar-close-btn"
@@ -101,7 +95,7 @@ const Sidebar = () => {
           {ROLE_LABELS[user?.role] || user?.role || ""}
         </div>
 
-        {/* Nav */}
+        {/* Nav links */}
         <nav className="sidebar-nav">
           {links.map((link) => (
             <NavLink
@@ -135,7 +129,7 @@ const Sidebar = () => {
         </div>
       </aside>
 
-      {/* ── Mobile backdrop — tap to close ── */}
+      {/* Mobile backdrop */}
       {isMobile && open && (
         <div
           className="sidebar-overlay"
@@ -144,7 +138,7 @@ const Sidebar = () => {
         />
       )}
 
-      {/* ── Mobile hamburger — fixed top-left, ONLY when sidebar is closed ── */}
+      {/* Mobile hamburger */}
       {isMobile && !open && (
         <button
           className="mobile-menu-btn"

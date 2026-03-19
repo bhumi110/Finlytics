@@ -1,68 +1,68 @@
 /* ══════════════════════════════════════════════════════
-   PAID EXPENSES PAGE  v2
+   PAID EXPENSES PAGE  v4 — Playfair/Syne editorial
 ══════════════════════════════════════════════════════ */
 
 .paid-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 28px;
-  flex-wrap: wrap;
-  gap: 16px;
+  display: flex; justify-content: space-between;
+  align-items: flex-start; margin-bottom: 28px;
+  flex-wrap: wrap; gap: 14px;
 }
 
 .paid-title {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--text-1);
-  letter-spacing: -0.5px;
-  line-height: 1.2;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.65rem; font-weight: 400;
+  color: var(--text-1); letter-spacing: -0.35px; line-height: 1.2;
 }
-
 .paid-subtitle {
-  font-size: 0.875rem;
-  color: var(--text-3);
-  margin-top: 5px;
-  font-weight: 400;
+  font-size: 0.835rem; color: var(--text-3);
+  margin-top: 5px; font-weight: 400; font-family: 'Syne', sans-serif;
 }
 
+/* Total pill */
 .paid-total {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  background: var(--green-bg);
-  border: 1px solid var(--green-border);
-  border-radius: var(--r-md);
-  padding: 10px 18px;
-  font-size: 0.9rem;
-  color: var(--green-dark);
-  font-weight: 600;
-  box-shadow: 0 2px 8px var(--green-glow);
-  white-space: nowrap;
+  display: flex; align-items: center; gap: 9px;
+  background: var(--green-bg); border: 1px solid var(--green-border);
+  border-radius: var(--r-md); padding: 10px 20px;
+  font-size: 0.845rem; color: var(--green-dark); font-weight: 500;
+  box-shadow: 0 2px 10px var(--green-glow); white-space: nowrap;
+  font-family: 'Syne', sans-serif;
+}
+.paid-total::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 7px rgba(21,128,61,0.5);
+  flex-shrink: 0;
+}
+.paid-total strong {
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem; letter-spacing: -0.2px;
 }
 
-.paid-total strong { font-weight: 800; }
-
+/* Error banner */
 .paid-error {
-  background: var(--red-bg);
-  color: var(--red-dark);
-  border: 1px solid var(--red-border);
-  border-left: 3px solid var(--red);
-  border-radius: var(--r-md);
-  padding: 13px 16px;
-  font-size: 0.875rem;
-  margin-bottom: 20px;
-  font-weight: 500;
-  box-shadow: 0 2px 8px var(--red-glow);
-  animation: alertIn 0.25s ease;
+  background: var(--red-bg); color: var(--red-dark);
+  border: 1px solid var(--red-border); border-left: 3px solid var(--red);
+  border-radius: var(--r-md); padding: 12px 16px;
+  font-size: 0.845rem; margin-bottom: 20px; font-weight: 500;
+  box-shadow: 0 2px 8px var(--red-glow); animation: alertIn 0.22s ease;
+  font-family: 'Syne', sans-serif;
 }
-
 @keyframes alertIn {
-  from { opacity: 0; transform: translateY(-6px); }
+  from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Responsive ──────────────────────────── */
+/* Employee cell styling (reuses user-cell from usermanagement) */
+.paid-emp-name {
+  font-weight: 600; color: var(--text-1); font-size: 0.845rem;
+  font-family: 'Syne', sans-serif; line-height: 1.3;
+}
+.paid-emp-email {
+  font-size: 0.71rem; color: var(--text-3); margin-top: 1px;
+  font-family: 'Syne', sans-serif;
+}
+
+/* ── Responsive ── */
 @media (max-width: 520px) {
   .paid-header { gap: 10px; }
   .paid-total  { width: 100%; justify-content: center; }

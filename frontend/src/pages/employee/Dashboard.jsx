@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../../components/Sidebar";
-import Topbar from "../../components/Topbar";
 import { useAuth } from "../../AuthContext";
-
+import Sidebar     from "../../components/Sidebar";
+import Topbar      from "../../components/Topbar";
 import StatusBadge from "../../components/StatusBadge";
 import { getMyExpenses } from "../../api/api";
 import { formatCurrency, formatDate } from "../../utils/format";
@@ -11,9 +10,9 @@ import "../../styles/dashboard.css";
 
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
-  const [expenses, setExpenses] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const [expenses, setExpenses] = useState([]);
+  const [loading, setLoading]   = useState(true);
 
   useEffect(() => {
     getMyExpenses()
@@ -22,16 +21,13 @@ const EmployeeDashboard = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const total = expenses.length;
-
-  const pending = expenses.filter((e) =>
-    ["SUBMITTED", "MANAGER_APPROVED", "FINANCE_APPROVED"].includes(e.status),
+  const total    = expenses.length;
+  const pending  = expenses.filter((e) =>
+    ["SUBMITTED", "MANAGER_APPROVED", "FINANCE_APPROVED"].includes(e.status)
   ).length;
-
   const approved = expenses
     .filter((e) => e.status === "FINANCE_APPROVED")
     .reduce((sum, e) => sum + e.amount, 0);
-
   const paid = expenses
     .filter((e) => e.status === "PAID")
     .reduce((sum, e) => sum + e.amount, 0);
@@ -42,98 +38,96 @@ const EmployeeDashboard = () => {
       <div className="page-content">
         <Topbar title="Dashboard" />
         <div className="page-body">
-          {/* Summary cards */}
+
+          {/* Stat cards */}
           <div className="stat-cards">
             <div className="stat-card">
-              <div className="stat-card-value">{total}</div>
-              <div className="stat-card-label">Total Expenses</div>
+              <span className="stat-card-label">Total Expenses</span>
+              <div className="stat-card-value">{loading ? "—" : total}</div>
             </div>
             <div className="stat-card">
-              <div className="stat-card-value">{pending}</div>
-              <div className="stat-card-label">Pending Approval</div>
+              <span className="stat-card-label">Pending Approval</span>
+              <div className="stat-card-value">{loading ? "—" : pending}</div>
             </div>
             <div className="stat-card">
-              <div className="stat-card-value">{formatCurrency(approved)}</div>
-              <div className="stat-card-label">Finance Approved</div>
+              <span className="stat-card-label">Finance Approved</span>
+              <div className="stat-card-value">{loading ? "—" : formatCurrency(approved)}</div>
             </div>
             <div className="stat-card">
-              <div className="stat-card-value">{formatCurrency(paid)}</div>
-              <div className="stat-card-label">Total Paid</div>
+              <span className="stat-card-label">Total Paid</span>
+              <div className="stat-card-value">{loading ? "—" : formatCurrency(paid)}</div>
             </div>
           </div>
 
           {/* Recent expenses table */}
           <div className="table-card">
             <div className="table-card-header">
-              <h6 className="table-card-title">Recent Expenses</h6>
-              <button
-                className="table-btn"
-                onClick={() => navigate("/employee/expenses")}
-              >
-                View All
+              <h2 className="table-card-title">Recent Expenses</h2>
+              <button className="table-btn" onClick={() => navigate("/employee/expenses")}>
+                View All →
               </button>
             </div>
 
-            {loading ? (
-              <div className="table-empty">Loading...</div>
-            ) : expenses.length === 0 ? (
-              <div className="table-empty">
-                No expenses yet.{" "}
-                <span
-                  style={{ color: "var(--primary)", cursor: "pointer" }}
-                  onClick={() => navigate("/employee/submit")}
-                >
-                  Submit your first one →
-                </span>
-              </div>
-            ) : (
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Category</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {expenses.slice(0, 8).map((exp) => (
-                    <tr key={exp._id}>
-                      <td
-                        style={{
-                          fontFamily: "monospace",
-                          fontSize: "0.78rem",
-                          color: "var(--gray-500)",
-                        }}
-                      >
-                        {exp._id?.slice(-8).toUpperCase()}
-                      </td>
-                      <td>{exp.category}</td>
-                      <td>
-                        <strong>{formatCurrency(exp.amount)}</strong>
-                      </td>
-                      <td>
-                        <StatusBadge status={exp.status} />
-                      </td>
-                      <td>{formatDate(exp.submittedAt || exp.createdAt)}</td>
-                      <td>
-                        <button
-                          className="table-btn"
-                          onClick={() =>
-                            navigate(`/employee/expenses/${exp._id}`)
-                          }
-                        >
-                          View
-                        </button>
-                      </td>
+            <div className="table-scroll-wrap">
+              {loading ? (
+                <div className="table-empty">
+                  <span className="table-empty-icon">⏳</span>
+                  Loading…
+                </div>
+              ) : expenses.length === 0 ? (
+                <div className="table-empty">
+                  <span className="table-empty-icon">📋</span>
+                  No expenses yet.{" "}
+                  <button
+                    className="table-btn"
+                    style={{ marginTop: 12 }}
+                    onClick={() => navigate("/employee/submit")}
+                  >
+                    Submit your first one →
+                  </button>
+                </div>
+              ) : (
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Category</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th></th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                  </thead>
+                  <tbody>
+                    {expenses.slice(0, 8).map((exp) => (
+                      <tr key={exp._id}>
+                        <td>
+                          <span className="mono-id">{exp._id?.slice(-8).toUpperCase()}</span>
+                        </td>
+                        <td>{exp.category}</td>
+                        <td style={{ fontFamily: "'Playfair Display', serif", fontSize: "1rem", letterSpacing: "-0.2px", fontWeight: 400, color: "var(--text-1)" }}>
+                          {formatCurrency(exp.amount)}
+                        </td>
+                        <td><StatusBadge status={exp.status} /></td>
+                        <td style={{ color: "var(--text-3)", fontSize: "0.82rem" }}>
+                          {formatDate(exp.submittedAt || exp.createdAt)}
+                        </td>
+                        <td>
+                          <button
+                            className="table-btn"
+                            onClick={() => navigate(`/employee/expenses/${exp._id}`)}
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
+
         </div>
       </div>
     </div>

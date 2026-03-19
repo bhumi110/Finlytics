@@ -8,7 +8,7 @@ import {
   getFinancePaid,
   financeApprove,
   financeReject,
-  markAsPaid
+  markAsPaid,
 } from "../../api/api";
 import { formatCurrency, formatDate } from "../../utils/format";
 import "../../styles/dashboard.css";
@@ -16,33 +16,29 @@ import "../../styles/financepending.css";
 
 const FinancePending = () => {
   const { user } = useAuth();
-  const [managerApproved, setManagerApproved] = useState([]); // needs finance approval
-  const [financeApproved, setFinanceApproved] = useState([]); // needs payment
+  const [managerApproved, setManagerApproved] = useState([]);
+  const [financeApproved, setFinanceApproved] = useState([]);
   const [loading, setLoading]   = useState(true);
   const [msg, setMsg]           = useState({ type: "", text: "" });
   const [actionId, setActionId] = useState("");
-
-  // Reject modal
   const [rejectId, setRejectId] = useState(null);
   const [reason, setReason]     = useState("");
   const [rejecting, setRejecting] = useState(false);
 
+  const showMsg = (type, text) => {
+    setMsg({ type, text });
+    setTimeout(() => setMsg({ type: "", text: "" }), 4000);
+  };
+
   const load = () => {
     setLoading(true);
-    // Load pending (MANAGER_APPROVED) and also get all paid to find FINANCE_APPROVED ones
     Promise.all([getFinancePending(), getFinancePaid()])
-      .then(([pendingRes, paidRes]) => {
-        // getFinancePending returns MANAGER_APPROVED expenses
-        setManagerApproved(pendingRes.data?.expenses || []);
-
-        // We need FINANCE_APPROVED expenses separately
-        // They won't be in pending or paid — call a custom approach:
-        // Actually re-use pending endpoint and filter by status
-        const allPending = pendingRes.data?.expenses || [];
-        setManagerApproved(allPending.filter(e => e.status === "MANAGER_APPROVED"));
-        setFinanceApproved(allPending.filter(e => e.status === "FINANCE_APPROVED"));
+      .then(([pendingRes]) => {
+        const all = pendingRes.data?.expenses || [];
+        setManagerApproved(all.filter((e) => e.status === "MANAGER_APPROVED"));
+        setFinanceApproved(all.filter((e) => e.status === "FINANCE_APPROVED"));
       })
-      .catch(() => setMsg({ type: "error", text: "Failed to load expenses." }))
+      .catch(() => showMsg("error", "Failed to load expenses."))
       .finally(() => setLoading(false));
   };
 
@@ -52,10 +48,10 @@ const FinancePending = () => {
     setActionId(id + "_approve");
     try {
       await financeApprove(id);
-      setMsg({ type: "success", text: "Expense approved by finance." });
+      showMsg("success", "Expense approved by finance.");
       load();
     } catch (err) {
-      setMsg({ type: "error", text: err.response?.data?.message || "Approval failed." });
+      showMsg("error", err.response?.data?.message || "Approval failed.");
     } finally {
       setActionId("");
     }
@@ -65,10 +61,10 @@ const FinancePending = () => {
     setActionId(id + "_pay");
     try {
       await markAsPaid(id);
-      setMsg({ type: "success", text: "Expense marked as paid." });
+      showMsg("success", "Expense marked as paid.");
       load();
     } catch (err) {
-      setMsg({ type: "error", text: err.response?.data?.message || "Failed." });
+      showMsg("error", err.response?.data?.message || "Payment failed.");
     } finally {
       setActionId("");
     }
@@ -81,16 +77,103 @@ const FinancePending = () => {
       await financeReject(rejectId, reason);
       setRejectId(null);
       setReason("");
-      setMsg({ type: "success", text: "Expense rejected." });
+      showMsg("success", "Expense rejected.");
       load();
     } catch (err) {
-      setMsg({ type: "error", text: err.response?.data?.message || "Rejection failed." });
+      showMsg("error", err.response?.data?.message || "Rejection failed.");
     } finally {
       setRejecting(false);
     }
   };
 
-  const allExpenses = [...managerApproved, ...financeApproved];
+  const getInitials = (name = "") =>
+    name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2) || "?";
+
+  const renderTable = (expenses, type) => (
+    <div className="table-scroll-wrap">
+      {loading ? (
+        <div className="table-empty"><span className="table-empty-icon">⏳</span>Loading…</div>
+      ) : expenses.length === 0 ? (
+        <div className="table-empty">
+          <span className="table-empty-icon">{type === "approve" ? "✅" : "💳"}</span>
+          {type === "approve"
+            ? "No expenses awaiting finance approval."
+            : "No expenses ready for payment."}
+        </div>
+      ) : (
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Employee</th>
+              <th>Category</th>
+              <th>Amount</th>
+              {type === "pay" && <th>Status</th>}
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {expenses.map((exp) => (
+              <tr key={exp._id}>
+                <td>
+                  <span className="mono-id">{exp._id?.slice(-8).toUpperCase()}</span>
+                </td>
+                <td>
+                  <div className="user-cell">
+                    <div className="user-avatar-sm">{getInitials(exp.employeeId?.name)}</div>
+                    <div>
+                      <div className="user-name">{exp.employeeId?.name || "Employee"}</div>
+                      {exp.employeeId?.email && (
+                        <div className="user-email">{exp.employeeId.email}</div>
+                      )}
+                    </div>
+                  </div>
+                </td>
+                <td>{exp.category}</td>
+                <td style={{ fontFamily: "'Playfair Display', serif", fontSize: "1rem", letterSpacing: "-0.2px", fontWeight: 400, color: "var(--text-1)" }}>
+                  {formatCurrency(exp.amount)}
+                </td>
+                {type === "pay" && <td><StatusBadge status={exp.status} /></td>}
+                <td style={{ color: "var(--text-3)", fontSize: "0.82rem" }}>
+                  {formatDate(exp.submittedAt)}
+                </td>
+                <td>
+                  <div className="finance-actions">
+                    {type === "approve" ? (
+                      <>
+                        <button
+                          className="btn-approve"
+                          disabled={actionId === exp._id + "_approve"}
+                          onClick={() => handleApprove(exp._id)}
+                        >
+                          {actionId === exp._id + "_approve" ? "…" : "Approve"}
+                        </button>
+                        <button
+                          className="btn-reject"
+                          onClick={() => { setRejectId(exp._id); setReason(""); }}
+                        >
+                          Reject
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        className="btn-paid"
+                        disabled={actionId === exp._id + "_pay"}
+                        onClick={() => handlePay(exp._id)}
+                      >
+                        {actionId === exp._id + "_pay" ? "…" : "Mark as Paid"}
+                      </button>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
 
   return (
     <div className={`app-layout${user?.role ? ` role-${user.role}` : ""}`}>
@@ -101,9 +184,7 @@ const FinancePending = () => {
 
           <div className="finance-header">
             <div className="finance-title">Finance Pending</div>
-            <div className="finance-subtitle">
-              Approve expenses and mark them as paid
-            </div>
+            <div className="finance-subtitle">Approve expenses and mark them as paid</div>
           </div>
 
           {msg.text && (
@@ -113,140 +194,55 @@ const FinancePending = () => {
           )}
 
           {/* Section 1 — Needs Finance Approval */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontWeight: 700, fontSize: "0.875rem", color: "#334155",
-              marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
-              Awaiting Finance Approval
-              <span style={{ background: "#e0f2fe", color: "#0369a1", borderRadius: 5,
-                padding: "2px 8px", fontSize: "0.75rem", fontWeight: 700 }}>
-                {managerApproved.length}
-              </span>
+          <div style={{ marginBottom: 28 }}>
+            <div className="finance-section-label">
+              <span className="finance-section-title">Awaiting Finance Approval</span>
+              <span className="count-badge blue">{managerApproved.length}</span>
             </div>
-
             <div className="table-card">
-              {loading ? (
-                <div className="table-empty">Loading...</div>
-              ) : managerApproved.length === 0 ? (
-                <div className="table-empty">No expenses waiting for finance approval.</div>
-              ) : (
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Employee</th>
-                      <th>Category</th>
-                      <th>Amount</th>
-                      <th>Date</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {managerApproved.map((exp) => (
-                      <tr key={exp._id}>
-                        <td style={{ fontFamily: "monospace", fontSize: "0.78rem", color: "#64748b" }}>
-                          {exp._id?.slice(-8).toUpperCase()}
-                        </td>
-                        <td><strong>{exp.employeeId?.name || "Employee"}</strong></td>
-                        <td>{exp.category}</td>
-                        <td><strong>{formatCurrency(exp.amount)}</strong></td>
-                        <td>{formatDate(exp.submittedAt)}</td>
-                        <td>
-                          <div className="finance-actions">
-                            <button className="btn-approve"
-                              disabled={actionId === exp._id + "_approve"}
-                              onClick={() => handleApprove(exp._id)}>
-                              {actionId === exp._id + "_approve" ? "..." : "Approve"}
-                            </button>
-                            <button className="btn-reject"
-                              onClick={() => { setRejectId(exp._id); setReason(""); }}>
-                              Reject
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
+              {renderTable(managerApproved, "approve")}
             </div>
           </div>
 
-          {/* Section 2 — Approved, Ready to Pay */}
+          {/* Section 2 — Ready to Pay */}
           <div>
-            <div style={{ fontWeight: 700, fontSize: "0.875rem", color: "#334155",
-              marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
-              Finance Approved — Ready to Pay
-              <span style={{ background: "#e6f6f0", color: "#0f7b4f", borderRadius: 5,
-                padding: "2px 8px", fontSize: "0.75rem", fontWeight: 700 }}>
-                {financeApproved.length}
-              </span>
+            <div className="finance-section-label">
+              <span className="finance-section-title">Finance Approved — Ready to Pay</span>
+              <span className="count-badge green">{financeApproved.length}</span>
             </div>
-
             <div className="table-card">
-              {loading ? (
-                <div className="table-empty">Loading...</div>
-              ) : financeApproved.length === 0 ? (
-                <div className="table-empty">No expenses ready for payment.</div>
-              ) : (
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Employee</th>
-                      <th>Category</th>
-                      <th>Amount</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {financeApproved.map((exp) => (
-                      <tr key={exp._id}>
-                        <td style={{ fontFamily: "monospace", fontSize: "0.78rem", color: "#64748b" }}>
-                          {exp._id?.slice(-8).toUpperCase()}
-                        </td>
-                        <td><strong>{exp.employeeId?.name || "Employee"}</strong></td>
-                        <td>{exp.category}</td>
-                        <td><strong>{formatCurrency(exp.amount)}</strong></td>
-                        <td><StatusBadge status={exp.status} /></td>
-                        <td>
-                          <button className="btn-paid"
-                            disabled={actionId === exp._id + "_pay"}
-                            onClick={() => handlePay(exp._id)}>
-                            {actionId === exp._id + "_pay" ? "..." : "Mark as Paid"}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
+              {renderTable(financeApproved, "pay")}
             </div>
           </div>
 
           {/* Reject Modal */}
           {rejectId && (
-            <div className="reject-modal-overlay">
+            <div
+              className="reject-modal-overlay"
+              onClick={(e) => e.target === e.currentTarget && (setRejectId(null), setReason(""))}
+            >
               <div className="reject-modal">
+                <div className="reject-modal-icon">✕</div>
                 <div className="reject-modal-title">Reject Expense</div>
                 <div className="reject-modal-desc">
                   Provide a reason — this will be visible to the employee.
                 </div>
                 <textarea
                   className="reject-modal-textarea"
-                  placeholder="Enter rejection reason..."
+                  placeholder="Enter rejection reason…"
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                 />
                 <div className="reject-modal-actions">
-                  <button className="btn-cancel"
-                    onClick={() => { setRejectId(null); setReason(""); }}>
+                  <button className="btn-cancel" onClick={() => { setRejectId(null); setReason(""); }}>
                     Cancel
                   </button>
-                  <button className="btn-confirm-reject"
+                  <button
+                    className="btn-confirm-reject"
                     onClick={handleReject}
-                    disabled={rejecting || !reason.trim()}>
-                    {rejecting ? "Rejecting..." : "Confirm Reject"}
+                    disabled={rejecting || !reason.trim()}
+                  >
+                    {rejecting ? "Rejecting…" : "Confirm Reject"}
                   </button>
                 </div>
               </div>

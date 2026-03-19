@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../../AuthContext";
 import Sidebar from "../../components/Sidebar";
-import Topbar from "../../components/Topbar";
+import Topbar  from "../../components/Topbar";
 import StatusBadge from "../../components/StatusBadge";
 import {
   getExpenseById,
@@ -11,50 +12,38 @@ import {
 } from "../../api/api";
 import { formatCurrency, formatDate } from "../../utils/format";
 import "../../styles/expensedetail.css";
-import { useAuth } from "../../AuthContext";
-
 
 const CATEGORIES = [
-  "Travel",
-  "Meals",
-  "Hotel",
-  "Office Supplies",
-  "Software",
-  "Training",
-  "Other",
+  "Travel", "Meals", "Hotel", "Office Supplies",
+  "Software", "Training", "Other",
 ];
 
 const STEPS = [
-  { key: "DRAFT", label: "Created as Draft" },
-  { key: "SUBMITTED", label: "Submitted for Approval" },
+  { key: "DRAFT",            label: "Created as Draft" },
+  { key: "SUBMITTED",        label: "Submitted for Approval" },
   { key: "MANAGER_APPROVED", label: "Manager Approved" },
   { key: "FINANCE_APPROVED", label: "Finance Approved" },
-  { key: "PAID", label: "Reimbursed / Paid" },
+  { key: "PAID",             label: "Reimbursed / Paid" },
 ];
 
 const STATUS_ORDER = [
-  "DRAFT",
-  "SUBMITTED",
-  "MANAGER_APPROVED",
-  "FINANCE_APPROVED",
-  "PAID",
+  "DRAFT", "SUBMITTED", "MANAGER_APPROVED", "FINANCE_APPROVED", "PAID",
 ];
 
 const ExpenseDetail = () => {
-  const { id } = useParams();
+  const { id }   = useParams();
   const navigate = useNavigate();
-  const {user}=useAuth()
-  const [expense, setExpense] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(false);
-  const [editForm, setEditForm] = useState({
-    amount: "",
-    category: "",
-    notes: "",
-  });
-  const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState({ type: "", text: "" });
+  const { user } = useAuth();
+
+  const [expense, setExpense]           = useState(null);
+  const [loading, setLoading]           = useState(true);
+  const [editing, setEditing]           = useState(false);
+  const [editForm, setEditForm]         = useState({ amount: "", category: "", notes: "" });
+  const [saving, setSaving]             = useState(false);
+  const [msg, setMsg]                   = useState({ type: "", text: "" });
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const showMsg = (type, text) => setMsg({ type, text });
 
   const load = () => {
     setLoading(true);
@@ -62,36 +51,27 @@ const ExpenseDetail = () => {
       .then((res) => {
         const exp = res.data.expense;
         setExpense(exp);
-        setEditForm({
-          amount: exp.amount,
-          category: exp.category,
-          notes: exp.notes || "",
-        });
+        setEditForm({ amount: exp.amount, category: exp.category, notes: exp.notes || "" });
       })
-      .catch(() => setMsg({ type: "error", text: "Expense not found." }))
+      .catch(() => showMsg("error", "Expense not found."))
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
-    load();
-  }, [id]);
+  useEffect(() => { load(); }, [id]);
 
   const handleSave = async () => {
     setSaving(true);
     try {
       await editExpense(id, {
-        amount: Number(editForm.amount),
+        amount:   Number(editForm.amount),
         category: editForm.category,
-        notes: editForm.notes,
+        notes:    editForm.notes,
       });
       setEditing(false);
-      setMsg({ type: "success", text: "Draft updated." });
+      showMsg("success", "Draft updated.");
       load();
     } catch (err) {
-      setMsg({
-        type: "error",
-        text: err.response?.data?.message || "Update failed.",
-      });
+      showMsg("error", err.response?.data?.message || "Update failed.");
     } finally {
       setSaving(false);
     }
@@ -100,13 +80,10 @@ const ExpenseDetail = () => {
   const handleSubmit = async () => {
     try {
       await submitExpense(id);
-      setMsg({ type: "success", text: "Expense submitted for approval." });
+      showMsg("success", "Expense submitted for approval.");
       load();
     } catch (err) {
-      setMsg({
-        type: "error",
-        text: err.response?.data?.message || "Submit failed.",
-      });
+      showMsg("error", err.response?.data?.message || "Submit failed.");
     }
   };
 
@@ -115,38 +92,37 @@ const ExpenseDetail = () => {
       await deleteExpense(id);
       navigate("/employee/expenses");
     } catch (err) {
-      setMsg({
-        type: "error",
-        text: err.response?.data?.message || "Delete failed.",
-      });
+      showMsg("error", err.response?.data?.message || "Delete failed.");
+      setConfirmDelete(false);
     }
   };
 
   const getStepState = (stepKey) => {
     if (expense?.status === "REJECTED") {
-      const stepIdx = STATUS_ORDER.indexOf(stepKey);
-      const statusIdx = STATUS_ORDER.indexOf(expense.status);
-      return stepIdx < statusIdx ? "done" : "pending";
+      return STATUS_ORDER.indexOf(stepKey) < STATUS_ORDER.indexOf("SUBMITTED") ? "done" : "pending";
     }
-    const stepIdx = STATUS_ORDER.indexOf(stepKey);
+    const stepIdx   = STATUS_ORDER.indexOf(stepKey);
     const statusIdx = STATUS_ORDER.indexOf(expense?.status);
-    if (stepIdx < statusIdx) return "done";
+    if (stepIdx < statusIdx)  return "done";
     if (stepIdx === statusIdx) return "active";
     return "pending";
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div className="app-layout">
         <Sidebar />
         <div className="page-content">
           <Topbar title="Expense Detail" />
           <div className="page-body">
-            <div>Loading...</div>
+            <div className="approval-msg" style={{ borderLeft: "3px solid var(--border)" }}>
+              Loading…
+            </div>
           </div>
         </div>
       </div>
     );
+  }
 
   return (
     <div className={`app-layout${user?.role ? ` role-${user.role}` : ""}`}>
@@ -154,12 +130,10 @@ const ExpenseDetail = () => {
       <div className="page-content">
         <Topbar title="Expense Detail" />
         <div className="page-body">
+
           {/* Header */}
           <div className="detail-header">
-            <button
-              className="detail-back"
-              onClick={() => navigate("/employee/expenses")}
-            >
+            <button className="detail-back" onClick={() => navigate("/employee/expenses")}>
               ← Back
             </button>
             <div className="detail-title">Expense Detail</div>
@@ -168,233 +142,107 @@ const ExpenseDetail = () => {
 
           {/* Message */}
           {msg.text && (
-            <div
-              style={{
-                background: msg.type === "success" ? "#e6f6f0" : "#fdecea",
-                color:
-                  msg.type === "success" ? "var(--success)" : "var(--danger)",
-                border: `1px solid ${msg.type === "success" ? "rgba(15,123,79,0.15)" : "rgba(190,29,44,0.15)"}`,
-                borderRadius: 6,
-                padding: "10px 14px",
-                marginBottom: 16,
-                fontSize: "0.855rem",
-              }}
-            >
-              {msg.text}
-            </div>
+            <div className={`approval-msg ${msg.type}`}>{msg.text}</div>
           )}
 
           <div className="detail-grid">
-            {/* Main info card */}
+
+            {/* ── Main info card ── */}
             <div className="detail-card">
               <div className="detail-card-title">
                 Expense Information
                 {expense?.status === "DRAFT" && !editing && (
-                  <button
-                    style={{
-                      marginLeft: "auto",
-                      background: "none",
-                      border: "1px solid var(--gray-300)",
-                      borderRadius: 5,
-                      padding: "3px 10px",
-                      fontSize: "0.78rem",
-                      cursor: "pointer",
-                      fontFamily: "inherit",
-                    }}
-                    onClick={() => setEditing(true)}
-                  >
+                  <button className="table-btn" onClick={() => setEditing(true)}>
                     Edit
                   </button>
                 )}
               </div>
 
               {editing ? (
-                // Edit mode
+                /* Edit mode */
                 <div>
-                  <label
-                    style={{
-                      fontSize: "0.825rem",
-                      fontWeight: 600,
-                      color: "var(--gray-700)",
-                      marginBottom: 4,
-                      display: "block",
-                    }}
-                  >
-                    Amount
-                  </label>
-                  <input
-                    className="detail-edit-input"
-                    type="number"
-                    value={editForm.amount}
-                    onChange={(e) =>
-                      setEditForm((p) => ({ ...p, amount: e.target.value }))
-                    }
-                  />
+                  <div style={{ marginBottom: 16 }}>
+                    <label className="detail-item-label" style={{ marginBottom: 7, display: "block" }}>Amount</label>
+                    <input
+                      className="detail-edit-input"
+                      type="number"
+                      value={editForm.amount}
+                      onChange={(e) => setEditForm((p) => ({ ...p, amount: e.target.value }))}
+                    />
+                  </div>
 
-                  <label
-                    style={{
-                      fontSize: "0.825rem",
-                      fontWeight: 600,
-                      color: "var(--gray-700)",
-                      marginBottom: 4,
-                      display: "block",
-                    }}
-                  >
-                    Category
-                  </label>
-                  <select
-                    className="detail-edit-select"
-                    value={editForm.category}
-                    onChange={(e) =>
-                      setEditForm((p) => ({ ...p, category: e.target.value }))
-                    }
-                  >
-                    {CATEGORIES.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-
-                  <label
-                    style={{
-                      fontSize: "0.825rem",
-                      fontWeight: 600,
-                      color: "var(--gray-700)",
-                      marginBottom: 4,
-                      display: "block",
-                    }}
-                  >
-                    Notes
-                  </label>
-                  <textarea
-                    className="detail-edit-textarea"
-                    value={editForm.notes}
-                    onChange={(e) =>
-                      setEditForm((p) => ({ ...p, notes: e.target.value }))
-                    }
-                  />
-
-                  <div className="d-flex gap-2">
-                    <button
-                      style={{
-                        background: "none",
-                        border: "1px solid var(--gray-300)",
-                        borderRadius: 6,
-                        padding: "7px 14px",
-                        fontSize: "0.855rem",
-                        cursor: "pointer",
-                        fontFamily: "inherit",
-                      }}
-                      onClick={() => setEditing(false)}
+                  <div style={{ marginBottom: 16 }}>
+                    <label className="detail-item-label" style={{ marginBottom: 7, display: "block" }}>Category</label>
+                    <select
+                      className="detail-edit-select"
+                      value={editForm.category}
+                      onChange={(e) => setEditForm((p) => ({ ...p, category: e.target.value }))}
                     >
+                      {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+
+                  <div style={{ marginBottom: 16 }}>
+                    <label className="detail-item-label" style={{ marginBottom: 7, display: "block" }}>Notes</label>
+                    <textarea
+                      className="detail-edit-textarea"
+                      value={editForm.notes}
+                      onChange={(e) => setEditForm((p) => ({ ...p, notes: e.target.value }))}
+                      placeholder="Optional notes…"
+                    />
+                  </div>
+
+                  <div className="detail-actions">
+                    <button className="btn-delete-expense" onClick={() => setEditing(false)}>
                       Cancel
                     </button>
-                    <button
-                      className="btn-submit-expense"
-                      onClick={handleSave}
-                      disabled={saving}
-                    >
-                      {saving ? "Saving..." : "Save Changes"}
+                    <button className="btn-submit-expense" onClick={handleSave} disabled={saving}>
+                      {saving ? "Saving…" : "Save Changes"}
                     </button>
                   </div>
                 </div>
               ) : (
-                // View mode
+                /* View mode */
                 <div>
                   <div className="detail-row">
                     <div>
                       <div className="detail-item-label">Amount</div>
-                      <div className="detail-item-value">
-                        {formatCurrency(expense?.amount)}
-                      </div>
+                      <div className="detail-amount">{formatCurrency(expense?.amount)}</div>
                     </div>
                     <div>
                       <div className="detail-item-label">Category</div>
-                      <div className="detail-item-value">
-                        {expense?.category}
-                      </div>
+                      <div className="detail-item-value">{expense?.category}</div>
                     </div>
                     <div>
-                      <div className="detail-item-label">Manager</div>{" "}
-                      <div className="detail-item-value">
-                        {expense?.managerId?.name || "—"}
-                      </div>
+                      <div className="detail-item-label">Manager</div>
+                      <div className="detail-item-value">{expense?.managerId?.name || "—"}</div>
                     </div>
                     <div>
                       <div className="detail-item-label">Submitted</div>
-                      <div className="detail-item-value">
-                        {formatDate(expense?.submittedAt)}
-                      </div>
+                      <div className="detail-item-value">{formatDate(expense?.submittedAt)}</div>
                     </div>
                   </div>
 
                   {expense?.notes && (
-                    <div className="detail-notes">
-                      <strong>Notes:</strong> {expense.notes}
-                    </div>
+                    <div className="detail-notes">{expense.notes}</div>
                   )}
 
                   {expense?.rejectionReason && (
                     <div className="detail-rejection">
-                      <div className="detail-rejection-label">
-                        Rejection Reason
-                      </div>
-                      <div className="detail-rejection-text">
-                        {expense.rejectionReason}
+                      <div className="detail-rejection-icon">✕</div>
+                      <div>
+                        <div className="detail-rejection-label">Rejection Reason</div>
+                        <div className="detail-rejection-text">{expense.rejectionReason}</div>
                       </div>
                     </div>
                   )}
-                  {/* Rejection reason — show when rejected */}
-                  {expense?.status === "REJECTED" &&
-                    expense?.rejectionReason && (
-                      <div
-                        style={{
-                          background: "#fdecea",
-                          border: "1px solid rgba(190,29,44,0.15)",
-                          borderRadius: 6,
-                          padding: "12px 14px",
-                          marginBottom: 16,
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: "0.7rem",
-                            fontWeight: 700,
-                            textTransform: "uppercase",
-                            letterSpacing: "0.5px",
-                            color: "#be1d2c",
-                            marginBottom: 4,
-                          }}
-                        >
-                          Rejection Reason
-                        </div>
-                        <div style={{ fontSize: "0.875rem", color: "#be1d2c" }}>
-                          {expense.rejectionReason}
-                        </div>
-                      </div>
-                    )}
 
-                  {/* Notes */}
-                  {expense?.notes && (
-                    <div className="detail-notes">
-                      <strong>Notes:</strong> {expense.notes}
-                    </div>
-                  )}
-
-                  {/* Draft actions */}
                   {expense?.status === "DRAFT" && (
                     <div className="detail-actions">
-                      <button
-                        className="btn-submit-expense"
-                        onClick={handleSubmit}
-                      >
-                        Submit for Approval
+                      <button className="btn-submit-expense" onClick={handleSubmit}>
+                        Submit for Approval →
                       </button>
-                      <button
-                        className="btn-delete-expense"
-                        onClick={() => setConfirmDelete(true)}
-                      >
+                      <button className="btn-delete-expense" onClick={() => setConfirmDelete(true)}>
                         Delete Draft
                       </button>
                     </div>
@@ -403,12 +251,12 @@ const ExpenseDetail = () => {
               )}
             </div>
 
-            {/* Timeline card */}
+            {/* ── Timeline sidebar ── */}
             <div className="timeline-card">
               <div className="timeline-card-title">Status Timeline</div>
 
               {STEPS.map((step, i) => {
-                const state = getStepState(step.key);
+                const state  = getStepState(step.key);
                 const isLast = i === STEPS.length - 1;
                 return (
                   <div key={step.key} className="timeline-step">
@@ -417,9 +265,7 @@ const ExpenseDetail = () => {
                         {state === "done" ? "✓" : i + 1}
                       </div>
                       {!isLast && (
-                        <div
-                          className={`timeline-line ${state === "done" ? "done" : "pending"}`}
-                        />
+                        <div className={`timeline-line ${state === "done" ? "done" : "pending"}`} />
                       )}
                     </div>
                     <div className={`timeline-step-label ${state}`}>
@@ -430,92 +276,44 @@ const ExpenseDetail = () => {
               })}
 
               {expense?.status === "REJECTED" && (
-                <div
-                  style={{
-                    background: "#fdecea",
-                    borderRadius: 6,
-                    padding: "8px 12px",
-                    marginTop: 8,
-                    fontSize: "0.8rem",
-                    color: "var(--danger)",
-                    fontWeight: 600,
-                  }}
-                >
-                  ✕ Rejected
+                <div className="detail-rejection" style={{ marginTop: 12 }}>
+                  <div className="detail-rejection-icon">✕</div>
+                  <div>
+                    <div className="detail-rejection-label">Rejected</div>
+                    {expense.rejectionReason && (
+                      <div className="detail-rejection-text">{expense.rejectionReason}</div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
+
           </div>
 
-          {/* Delete confirm */}
+          {/* Delete confirm modal — uses myexpenses.css modal-box classes */}
           {confirmDelete && (
             <div
               className="modal-overlay"
-              style={{
-                position: "fixed",
-                inset: 0,
-                background: "rgba(0,0,0,0.4)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 999,
-              }}
+              onClick={(e) => e.target === e.currentTarget && setConfirmDelete(false)}
             >
-              <div
-                style={{
-                  background: "#fff",
-                  borderRadius: 10,
-                  padding: 28,
-                  maxWidth: 360,
-                  width: "100%",
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
-                }}
-              >
-                <div style={{ fontWeight: 700, marginBottom: 8 }}>
-                  Delete this draft?
+              <div className="modal-box">
+                <div className="modal-icon">🗑</div>
+                <div className="modal-title">Delete this draft?</div>
+                <div className="modal-desc">
+                  This expense will be permanently deleted and cannot be recovered.
                 </div>
-                <div
-                  style={{
-                    fontSize: "0.875rem",
-                    color: "var(--gray-500)",
-                    marginBottom: 20,
-                  }}
-                >
-                  This cannot be undone.
-                </div>
-                <div className="d-flex gap-2 justify-content-end">
-                  <button
-                    style={{
-                      background: "none",
-                      border: "1px solid var(--gray-300)",
-                      borderRadius: 6,
-                      padding: "7px 16px",
-                      cursor: "pointer",
-                      fontFamily: "inherit",
-                    }}
-                    onClick={() => setConfirmDelete(false)}
-                  >
+                <div className="modal-actions">
+                  <button className="btn-cancel" onClick={() => setConfirmDelete(false)}>
                     Cancel
                   </button>
-                  <button
-                    style={{
-                      background: "var(--danger)",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 6,
-                      padding: "7px 16px",
-                      cursor: "pointer",
-                      fontFamily: "inherit",
-                      fontWeight: 600,
-                    }}
-                    onClick={handleDelete}
-                  >
+                  <button className="btn-confirm-delete" onClick={handleDelete}>
                     Delete
                   </button>
                 </div>
               </div>
             </div>
           )}
+
         </div>
       </div>
     </div>

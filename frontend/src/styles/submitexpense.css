@@ -1,264 +1,211 @@
 /* ══════════════════════════════════════════════════════
-   SUBMIT EXPENSE PAGE  v2
+   SUBMIT EXPENSE PAGE  v8 — Playfair/Syne editorial
 ══════════════════════════════════════════════════════ */
 
+/* ── Page header ── */
 .submit-header { margin-bottom: 28px; }
-
 .submit-title {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--text-1);
-  letter-spacing: -0.5px;
-  line-height: 1.2;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.65rem; font-weight: 400; color: var(--text-1);
+  letter-spacing: -0.35px; line-height: 1.2;
 }
-
 .submit-subtitle {
-  font-size: 0.875rem;
-  color: var(--text-3);
-  margin-top: 5px;
-  font-weight: 400;
+  font-size: 0.835rem; color: var(--text-3);
+  margin-top: 5px; font-weight: 400; font-family: 'Syne', sans-serif;
 }
 
-/* ── Form Card ───────────────────────────── */
+/* ── Form card ── */
 .submit-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 32px 36px;
-  max-width: 660px;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--t);
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r-xl); padding: 30px 32px;
+  max-width: 660px; box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--t); width: 100%;
 }
-
-.submit-card:focus-within {
-  box-shadow: var(--shadow-md);
-}
+.submit-card:focus-within { box-shadow: var(--shadow-md); }
 
 .submit-card-title {
-  font-size: 0.93rem;
-  font-weight: 700;
-  color: var(--text-1);
-  margin-bottom: 26px;
-  padding-bottom: 18px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.05rem; font-weight: 400; color: var(--text-1);
+  margin-bottom: 26px; padding-bottom: 16px;
   border-bottom: 1px solid var(--border-soft);
-  display: flex;
-  align-items: center;
-  gap: 9px;
+  display: flex; align-items: center; gap: 10px;
+  letter-spacing: -0.1px;
 }
 
+/* ── Form fields ── */
 .submit-field { margin-bottom: 22px; }
 
 .submit-label {
-  display: block;
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--text-2);
-  margin-bottom: 7px;
+  display: block; font-size: 0.76rem; font-weight: 700;
+  color: var(--text-2); margin-bottom: 8px;
+  letter-spacing: 0.3px; text-transform: uppercase;
+  font-family: 'Syne', sans-serif;
 }
-
-.submit-label .req { color: var(--red); margin-left: 3px; }
+.submit-label .req { color: var(--red); margin-left: 2px; }
 .submit-label .opt {
-  color: var(--text-4);
-  font-weight: 400;
-  font-size: 0.78rem;
-  margin-left: 5px;
+  color: var(--text-4); font-weight: 400; font-size: 0.72rem;
+  margin-left: 5px; text-transform: none; letter-spacing: 0;
 }
 
 .submit-input,
 .submit-select,
 .submit-textarea {
-  width: 100%;
-  padding: 11px 15px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r-md);
-  font-size: 0.9rem;
-  font-family: inherit;
-  outline: none;
-  color: var(--text-1);
-  background: var(--surface-2);
-  transition: all var(--t);
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid var(--border); border-radius: var(--r-md);
+  font-size: 0.875rem; font-family: 'Syne', sans-serif; outline: none;
+  color: var(--text-1); background: var(--surface-2); transition: all var(--t);
+  line-height: 1.5;
 }
-
 .submit-input:hover:not(:focus),
 .submit-select:hover:not(:focus),
-.submit-textarea:hover:not(:focus) {
-  border-color: var(--border-hover);
-}
-
+.submit-textarea:hover:not(:focus) { border-color: var(--border-hover); }
 .submit-input:focus,
 .submit-select:focus,
 .submit-textarea:focus {
-  border-color: var(--brand);
-  background: #fff;
-  box-shadow: 0 0 0 4px var(--brand-glow);
+  border-color: var(--brand); background: var(--white);
+  box-shadow: 0 0 0 3.5px rgba(26,107,90,0.11);
 }
-
 .submit-input::placeholder,
-.submit-textarea::placeholder { color: var(--text-4); }
+.submit-textarea::placeholder { color: var(--text-4); font-weight: 400; }
+.submit-textarea { resize: vertical; min-height: 90px; }
 
-.submit-textarea {
-  resize: vertical;
-  min-height: 96px;
-}
+.submit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 
-/* ── Row layout for side-by-side fields ─── */
-.submit-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-}
-
-/* ── Receipt Upload ──────────────────────── */
+/* ── Receipt upload zone ── */
 .submit-receipt {
-  border: 2px dashed var(--border);
-  border-radius: var(--r-lg);
-  padding: 34px 22px;
-  text-align: center;
-  cursor: pointer;
-  background: var(--surface-2);
-  transition: all var(--t);
-  position: relative;
+  border: 1.5px dashed var(--border); border-radius: var(--r-lg);
+  padding: 32px 24px; text-align: center; cursor: pointer;
+  background: var(--surface-2); transition: all var(--t);
+  position: relative; overflow: hidden;
 }
-
-.submit-receipt:hover {
-  border-color: var(--brand);
-  background: var(--brand-light);
+.submit-receipt::before {
+  content: ""; position: absolute; inset: 0; border-radius: var(--r-lg);
+  background: radial-gradient(circle at center, rgba(26,107,90,0.04) 0%, transparent 70%);
+  opacity: 0; transition: opacity var(--t); pointer-events: none;
 }
+.submit-receipt:hover { border-color: var(--brand); background: var(--brand-light); }
+.submit-receipt:hover::before { opacity: 1; }
 
 .submit-receipt.uploaded {
-  border-style: solid;
-  border-color: var(--green);
-  background: var(--green-bg);
+  border-style: solid; border-color: var(--green); background: var(--green-bg);
 }
-
 .submit-receipt.drag-over {
-  border-color: var(--brand);
-  background: var(--brand-light);
-  box-shadow: 0 0 0 4px var(--brand-glow);
+  border-color: var(--brand); background: var(--brand-light);
+  box-shadow: 0 0 0 3.5px rgba(26,107,90,0.11);
 }
 
 .submit-receipt-icon {
-  font-size: 1.8rem;
-  margin-bottom: 11px;
-  opacity: 0.4;
-  display: block;
+  font-size: 1.6rem; margin-bottom: 10px; opacity: 0.3; display: block;
+  transition: opacity var(--t);
 }
+.submit-receipt:hover .submit-receipt-icon { opacity: 0.55; }
 
 .submit-receipt-text {
-  font-size: 0.9rem;
-  color: var(--text-2);
-  font-weight: 600;
+  font-size: 0.855rem; color: var(--text-2); font-weight: 600;
+  font-family: 'Syne', sans-serif;
 }
-
 .submit-receipt-hint {
-  font-size: 0.79rem;
-  color: var(--text-3);
-  margin-top: 5px;
+  font-size: 0.755rem; color: var(--text-3); margin-top: 5px;
+  font-family: 'Syne', sans-serif;
 }
-
 .submit-receipt-ok {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--green-dark);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
+  font-size: 0.855rem; font-weight: 600; color: var(--green-dark);
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  font-family: 'Syne', sans-serif;
 }
-
+.submit-receipt-ok::before {
+  content: "✓"; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.62rem; font-weight: 700; flex-shrink: 0;
+}
 .submit-receipt-size {
-  font-size: 0.76rem;
-  color: var(--text-3);
-  margin-top: 5px;
+  font-size: 0.72rem; color: var(--text-3); margin-top: 5px;
+  font-family: 'Syne', sans-serif;
 }
 
+/* ── Field errors ── */
 .submit-field-error {
-  color: var(--red);
-  font-size: 0.79rem;
-  margin-top: 6px;
-  display: block;
-  font-weight: 500;
+  color: var(--red); font-size: 0.76rem; margin-top: 6px;
+  display: block; font-weight: 600; font-family: 'Syne', sans-serif;
+  animation: errorIn 0.2s ease;
+}
+@keyframes errorIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Action Buttons ──────────────────────── */
+/* API error banner */
+.submit-error {
+  background: var(--red-bg); color: var(--red-dark);
+  border: 1px solid var(--red-border); border-left: 3px solid var(--red);
+  border-radius: var(--r-md); padding: 12px 16px;
+  font-size: 0.845rem; margin-bottom: 20px; font-weight: 500;
+  animation: alertIn 0.22s ease; width: 100%;
+  font-family: 'Syne', sans-serif;
+}
+@keyframes alertIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Action buttons ── */
 .submit-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 30px;
-  padding-top: 26px;
+  display: flex; gap: 12px;
+  margin-top: 28px; padding-top: 24px;
   border-top: 1px solid var(--border-soft);
 }
 
 .submit-btn-draft {
   flex: 1;
-  padding: 12px;
-  background: none;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r-md);
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  color: var(--text-2);
-  transition: all var(--t);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px; background: var(--surface-2);
+  border: 1.5px solid var(--border); border-radius: var(--r-md);
+  font-size: 0.855rem; font-weight: 500; cursor: pointer;
+  font-family: 'Syne', sans-serif; color: var(--text-2); transition: all var(--t);
+  letter-spacing: 0.1px;
 }
-
-.submit-btn-draft:hover {
-  border-color: var(--brand);
-  color: var(--brand);
-  background: var(--brand-light);
-}
+.submit-btn-draft:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+.submit-btn-draft:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .submit-btn-submit {
   flex: 1;
-  padding: 12px;
-  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-  color: #fff;
-  border: none;
-  border-radius: var(--r-md);
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all var(--t);
-  box-shadow: var(--shadow-brand);
-  position: relative;
-  overflow: hidden;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px; background: var(--brand);
+  color: #fff; border: none; border-radius: var(--r-md);
+  font-size: 0.855rem; font-weight: 600; cursor: pointer;
+  font-family: 'Syne', sans-serif; transition: all var(--t);
+  box-shadow: var(--shadow-brand); letter-spacing: 0.2px;
+  position: relative; overflow: hidden;
 }
-
 .submit-btn-submit::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%);
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+  pointer-events: none;
 }
+.submit-btn-submit:hover    { background: var(--brand-dark); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(26,107,90,0.36); }
+.submit-btn-submit:active   { transform: translateY(0); }
+.submit-btn-submit:disabled { background: var(--border); box-shadow: none; cursor: not-allowed; transform: none; color: var(--text-4); }
 
-.submit-btn-submit:hover    { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(79,70,229,0.4); }
-.submit-btn-submit:disabled { background: #d1d5e0; box-shadow: none; cursor: not-allowed; transform: none; }
-
-.submit-error {
-  background: var(--red-bg);
-  color: var(--red-dark);
-  border: 1px solid var(--red-border);
-  border-left: 3px solid var(--red);
-  border-radius: var(--r-md);
-  padding: 12px 15px;
-  font-size: 0.875rem;
-  margin-bottom: 22px;
-  font-weight: 500;
-  animation: alertIn 0.25s ease;
+/* ═══════════════ BREAKPOINTS ═══════════════ */
+@media (min-width: 1200px) {
+  .submit-card { padding: 34px 38px; max-width: 700px; }
 }
-
-@keyframes alertIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+@media (max-width: 1023px) and (min-width: 768px) { .submit-card { max-width: 100%; } }
+@media (max-width: 767px)  { .submit-card { padding: 24px 22px; } }
+@media (max-width: 639px) {
+  .submit-row { grid-template-columns: 1fr; gap: 0; }
+  .submit-card { padding: 22px 18px; }
 }
-
-/* ── Responsive ──────────────────────────── */
-@media (max-width: 640px) {
-  .submit-card    { padding: 24px 20px; }
-  .submit-row     { grid-template-columns: 1fr; gap: 0; }
-  .submit-actions { flex-direction: column-reverse; }
-  .submit-btn-draft,
-  .submit-btn-submit { flex: none; width: 100%; }
+@media (max-width: 479px) {
+  .submit-card { padding: 20px 16px; border-radius: var(--r-lg); }
+  .submit-row  { grid-template-columns: 1fr; gap: 0; }
+  .submit-actions { flex-direction: column-reverse; gap: 8px; }
+  .submit-btn-draft, .submit-btn-submit { flex: none; width: 100%; padding: 14px; font-size: 0.875rem; }
+  .submit-receipt { padding: 24px 16px; }
+}
+@media (max-width: 360px) {
+  .submit-card-title { font-size: 0.95rem; }
+  .submit-label { font-size: 0.72rem; }
+  .submit-input, .submit-select, .submit-textarea { padding: 10px 12px; font-size: 0.845rem; }
 }

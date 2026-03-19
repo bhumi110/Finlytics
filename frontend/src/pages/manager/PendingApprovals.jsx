@@ -14,16 +14,19 @@ import "../../styles/dashboard.css";
 import "../../styles/pendingapprovals.css";
 
 const PendingApprovals = () => {
-  const { user } = useAuth();
-  const [expenses, setExpenses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [msg, setMsg] = useState({ type: "", text: "" });
-  const navigate = useNavigate();
-
-  // Reject modal state
-  const [rejectId, setRejectId] = useState(null);
-  const [reason, setReason] = useState("");
+  const { user }   = useAuth();
+  const navigate   = useNavigate();
+  const [expenses, setExpenses]   = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [msg, setMsg]             = useState({ type: "", text: "" });
+  const [rejectId, setRejectId]   = useState(null);
+  const [reason, setReason]       = useState("");
   const [rejecting, setRejecting] = useState(false);
+
+  const showMsg = (type, text) => {
+    setMsg({ type, text });
+    setTimeout(() => setMsg({ type: "", text: "" }), 4000);
+  };
 
   const load = () => {
     setLoading(true);
@@ -33,25 +36,20 @@ const PendingApprovals = () => {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(() => { load(); }, []);
 
   const handleApprove = async (id, employeeId) => {
-    // Manager cannot approve their own expense
-    if (employeeId === user.id || employeeId?._id === user.id) {
-      setMsg({ type: "error", text: "You cannot approve your own expense." });
+    const empId = employeeId?._id || employeeId;
+    if (empId === user.id) {
+      showMsg("error", "You cannot approve your own expense.");
       return;
     }
     try {
       await managerApprove(id);
-      setMsg({ type: "success", text: "Expense approved." });
+      showMsg("success", "Expense approved successfully.");
       load();
     } catch (err) {
-      setMsg({
-        type: "error",
-        text: err.response?.data?.message || "Approval failed.",
-      });
+      showMsg("error", err.response?.data?.message || "Approval failed.");
     }
   };
 
@@ -62,17 +60,17 @@ const PendingApprovals = () => {
       await managerReject(rejectId, reason);
       setRejectId(null);
       setReason("");
-      setMsg({ type: "success", text: "Expense rejected." });
+      showMsg("success", "Expense rejected.");
       load();
     } catch (err) {
-      setMsg({
-        type: "error",
-        text: err.response?.data?.message || "Rejection failed.",
-      });
+      showMsg("error", err.response?.data?.message || "Rejection failed.");
     } finally {
       setRejecting(false);
     }
   };
+
+  const getInitials = (name = "") =>
+    name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?";
 
   return (
     <div className={`app-layout${user?.role ? ` role-${user.role}` : ""}`}>
@@ -80,6 +78,8 @@ const PendingApprovals = () => {
       <div className="page-content">
         <Topbar title="Pending Approvals" />
         <div className="page-body">
+
+          {/* Header */}
           <div className="pending-header">
             <div className="pending-title">Pending Approvals</div>
             <div className="pending-subtitle">
@@ -87,123 +87,123 @@ const PendingApprovals = () => {
             </div>
           </div>
 
+          {/* Alert */}
           {msg.text && (
-            <div
-              style={{
-                background: msg.type === "success" ? "#e6f6f0" : "#fdecea",
-                color:
-                  msg.type === "success" ? "var(--success)" : "var(--danger)",
-                border: `1px solid ${msg.type === "success" ? "rgba(15,123,79,0.15)" : "rgba(190,29,44,0.15)"}`,
-                borderRadius: 6,
-                padding: "10px 14px",
-                marginBottom: 16,
-                fontSize: "0.855rem",
-              }}
-            >
-              {msg.text}
-            </div>
+            <div className={`pending-alert ${msg.type}`}>{msg.text}</div>
           )}
 
+          {/* Table */}
           <div className="table-card">
-            {loading ? (
-              <div className="table-empty">Loading...</div>
-            ) : expenses.length === 0 ? (
-              <div className="table-empty">
-                No pending approvals. Your team is all caught up!
-              </div>
-            ) : (
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Employee</th>
-                    <th>Category</th>
-                    <th>Amount</th>
-                    <th>Notes</th>
-                    <th>Submitted</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {expenses.map((exp) => (
-                    <tr key={exp._id}>
-                      <td>
-                        <strong>{exp.employeeId?.name || "Employee"}</strong>
-                      </td>
-                      <td>{exp.category}</td>
-                      <td>
-                        <strong>{formatCurrency(exp.amount)}</strong>
-                      </td>
-                      <td
-                        style={{
-                          color: "var(--gray-500)",
-                          maxWidth: 160,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {exp.notes || "—"}
-                      </td>
-                      <td>{formatDate(exp.submittedAt)}</td>
-                      <td>
-                        <div className="d-flex gap-2">
-                          <button
-                            className="table-btn"
-                            onClick={() =>
-                              navigate(`/manager/pending/${exp._id}`)
-                            }
-                          >
-                            {" "}
-                            {/* ← add this */}
-                            View
-                          </button>
-                          <button
-                            className="table-btn approve"
-                            onClick={() =>
-                              handleApprove(exp._id, exp.employeeId)
-                            }
-                          >
-                            Approve
-                          </button>
-                          <button
-                            className="table-btn reject"
-                            onClick={() => {
-                              setRejectId(exp._id);
-                              setReason("");
-                            }}
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      </td>
+            <div className="table-card-header">
+              <h2 className="table-card-title">Team Submissions</h2>
+              {!loading && (
+                <span className="count-badge amber">{expenses.length}</span>
+              )}
+            </div>
+
+            <div className="table-scroll-wrap">
+              {loading ? (
+                <div className="table-empty">
+                  <span className="table-empty-icon">⏳</span>
+                  Loading…
+                </div>
+              ) : expenses.length === 0 ? (
+                <div className="table-empty">
+                  <span className="table-empty-icon">✅</span>
+                  No pending approvals. Your team is all caught up!
+                </div>
+              ) : (
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Employee</th>
+                      <th>Category</th>
+                      <th>Amount</th>
+                      <th>Notes</th>
+                      <th>Submitted</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                  </thead>
+                  <tbody>
+                    {expenses.map((exp) => (
+                      <tr key={exp._id}>
+                        <td>
+                          <div className="user-cell">
+                            <div className="user-avatar-sm">
+                              {getInitials(exp.employeeId?.name)}
+                            </div>
+                            <div>
+                              <div className="user-name">{exp.employeeId?.name || "Employee"}</div>
+                              {exp.employeeId?.email && (
+                                <div className="user-email">{exp.employeeId.email}</div>
+              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td>{exp.category}</td>
+                        <td>
+                          <strong style={{ fontFamily: "'Playfair Display', serif", fontSize: "1rem", letterSpacing: "-0.2px" }}>
+                            {formatCurrency(exp.amount)}
+                          </strong>
+                        </td>
+                        <td className="cell-wrap" style={{ maxWidth: 160 }}>
+                          {exp.notes || <span style={{ color: "var(--text-4)" }}>—</span>}
+                        </td>
+                        <td style={{ color: "var(--text-3)", fontSize: "0.82rem" }}>
+                          {formatDate(exp.submittedAt)}
+                        </td>
+                        <td>
+                          <div style={{ display: "flex", gap: 6 }}>
+                            <button
+                              className="table-btn"
+                              onClick={() => navigate(`/manager/pending/${exp._id}`)}
+                            >
+                              View
+                            </button>
+                            <button
+                              className="table-btn approve"
+                              onClick={() => handleApprove(exp._id, exp.employeeId)}
+                            >
+                              Approve
+                            </button>
+                            <button
+                              className="table-btn reject"
+                              onClick={() => { setRejectId(exp._id); setReason(""); }}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
 
           {/* Reject modal */}
           {rejectId && (
-            <div className="reject-modal-overlay">
+            <div
+              className="reject-modal-overlay"
+              onClick={(e) => e.target === e.currentTarget && (setRejectId(null), setReason(""))}
+            >
               <div className="reject-modal">
+                <div className="reject-modal-icon">✕</div>
                 <div className="reject-modal-title">Reject Expense</div>
                 <div className="reject-modal-desc">
                   Provide a reason — this will be visible to the employee.
                 </div>
                 <textarea
                   className="reject-modal-textarea"
-                  placeholder="Enter rejection reason..."
+                  placeholder="Enter rejection reason…"
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                 />
                 <div className="reject-modal-actions">
                   <button
                     className="btn-cancel"
-                    onClick={() => {
-                      setRejectId(null);
-                      setReason("");
-                    }}
+                    onClick={() => { setRejectId(null); setReason(""); }}
                   >
                     Cancel
                   </button>
@@ -212,12 +212,13 @@ const PendingApprovals = () => {
                     onClick={handleReject}
                     disabled={rejecting || !reason.trim()}
                   >
-                    {rejecting ? "Rejecting..." : "Confirm Reject"}
+                    {rejecting ? "Rejecting…" : "Confirm Reject"}
                   </button>
                 </div>
               </div>
             </div>
           )}
+
         </div>
       </div>
     </div>

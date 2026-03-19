@@ -1,13 +1,13 @@
 import { useAuth } from "../AuthContext";
 import "../styles/layout.css";
 
-const PAGE_SUBTITLES = {
-  "Dashboard":      "Overview of your activity",
-  "My Expenses":    "Track and manage your expenses",
-  "Submit Expense": "Add a new expense claim",
-  "Pending":        "Items awaiting your action",
-  "Paid":           "Completed reimbursements",
-  "Users":          "Manage team members",
+const PAGE_META = {
+  "Dashboard":        { eyebrow: "Overview",    subtitle: "Your activity at a glance" },
+  "My Expenses":      { eyebrow: "Expenses",    subtitle: "Track and manage your claims" },
+  "Submit Expense":   { eyebrow: "New Claim",   subtitle: "Add a new expense" },
+  "Pending":          { eyebrow: "Queue",        subtitle: "Items awaiting your action" },
+  "Paid":             { eyebrow: "Finance",      subtitle: "Completed reimbursements" },
+  "User Management":  { eyebrow: "Admin",        subtitle: "Manage team members & roles" },
 };
 
 const Topbar = ({ title }) => {
@@ -19,24 +19,22 @@ const Topbar = ({ title }) => {
   const roleLabel = user?.role
     ? user.role.charAt(0) + user.role.slice(1).toLowerCase()
     : "";
-  const subtitle = PAGE_SUBTITLES[title] || "";
+  const meta = PAGE_META[title] || {};
 
   return (
     <div className="topbar">
-      {/* Left: title block (hamburger is now handled by Sidebar itself) */}
       <div className="topbar-left">
-        {/* Spacer so title doesn't hide behind the floating hamburger on mobile */}
-        <div className="topbar-mobile-spacer" aria-hidden="true" />
-        <div>
+        <div className="topbar-title-block">
+          {meta.eyebrow && <span className="topbar-eyebrow">{meta.eyebrow}</span>}
           <div className="topbar-title">{title}</div>
-          {subtitle && <div className="topbar-subtitle">{subtitle}</div>}
+          {meta.subtitle && <div className="topbar-subtitle">{meta.subtitle}</div>}
         </div>
       </div>
 
-      {/* Right: bell + user chip */}
       <div className="topbar-right">
+        {/* Notification bell */}
         <button className="topbar-icon-btn" aria-label="Notifications">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
@@ -44,7 +42,8 @@ const Topbar = ({ title }) => {
           <span className="topbar-notif-dot" />
         </button>
 
-        <div className="topbar-user-chip">
+        {/* User chip */}
+        <div className="topbar-user-chip" role="button" tabIndex={0}>
           <div className="topbar-avatar">{initials}</div>
           <div className="topbar-user-info">
             <div className="topbar-user-name">{user?.name}</div>

@@ -43,7 +43,8 @@ const Register = () => {
 
   return (
     <div className="register-page">
-      {/* Left — Brand */}
+
+      {/* ── Left Panel — Brand Stage ── */}
       <div className="register-left">
         <div className="register-brand">
           <div className="register-brand-icon">F</div>
@@ -53,33 +54,72 @@ const Register = () => {
             Submit, track, and manage<br />
             expenses with ease.
           </div>
+
+          <div className="register-steps">
+            <div className="register-step">
+              <div className="register-step-num">01</div>
+              <div className="register-step-body">
+                <div className="register-step-title">Create your account</div>
+                <div className="register-step-desc">Set up with your work email in under a minute</div>
+              </div>
+            </div>
+            <div className="register-step">
+              <div className="register-step-num">02</div>
+              <div className="register-step-body">
+                <div className="register-step-title">Submit expenses</div>
+                <div className="register-step-desc">Upload receipts and log claims instantly</div>
+              </div>
+            </div>
+            <div className="register-step">
+              <div className="register-step-num">03</div>
+              <div className="register-step-body">
+                <div className="register-step-title">Get reimbursed</div>
+                <div className="register-step-desc">Track approvals and receive payments fast</div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <div className="register-watermark">FINLYTICS · v2.0</div>
       </div>
 
-      {/* Right — Form */}
+      {/* ── Right Panel — Form ── */}
       <div className="register-right">
         <div className="register-form-wrap">
+
+          {/* Mobile brand */}
+          <div className="register-mobile-brand">
+            <div className="register-mobile-brand-icon">F</div>
+            <div className="register-mobile-brand-name">Finlytics</div>
+          </div>
+
           <div className="register-heading">Create account</div>
-          <div className="register-subheading">You'll be registered as an Employee</div>
+          <div className="register-subheading">Start managing your expenses today</div>
 
           {error && <div className="register-error">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             {[
-              { label: "Full Name",         name: "name",     type: "text",     placeholder: "John Smith" },
-              { label: "Email Address",     name: "email",    type: "email",    placeholder: "you@company.com" },
-              { label: "Password",          name: "password", type: "password", placeholder: "Min 6 chars, 1 uppercase, 1 number" },
-              { label: "Confirm Password",  name: "confirm",  type: "password", placeholder: "Repeat your password" },
+              { label: "Full Name",        name: "name",     type: "text",     placeholder: "John Smith" },
+              { label: "Email Address",    name: "email",    type: "email",    placeholder: "you@company.com" },
+              { label: "Password",         name: "password", type: "password", placeholder: "Min 6 chars, 1 uppercase, 1 number" },
+              { label: "Confirm Password", name: "confirm",  type: "password", placeholder: "Repeat your password" },
             ].map(f => (
-              <div key={f.name} style={{ marginBottom: 14 }}>
+              <div key={f.name} style={{ marginBottom: 16 }}>
                 <label className="register-label">{f.label}</label>
-                <input className="register-input" name={f.name} type={f.type}
-                  placeholder={f.placeholder} value={form[f.name]} onChange={handleChange} />
+                <input
+                  className="register-input"
+                  name={f.name}
+                  type={f.type}
+                  placeholder={f.placeholder}
+                  value={form[f.name]}
+                  onChange={handleChange}
+                />
               </div>
             ))}
 
             <button className="register-btn" type="submit" disabled={loading}>
-              {loading ? "Creating account..." : "Create Account →"}
+              {loading ? "Creating account…" : "Create Account →"}
             </button>
           </form>
 
@@ -88,6 +128,7 @@ const Register = () => {
           </p>
         </div>
       </div>
+
     </div>
   );
 };
