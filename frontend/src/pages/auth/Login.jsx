@@ -31,7 +31,7 @@ const Login = () => {
   return (
     <div className="login-page">
 
-      {/* ── Left Panel — Brand Stage ── */}
+      {/* Left Panel */}
       <div className="login-left">
         <div className="login-brand">
           <div className="login-brand-icon">F</div>
@@ -60,11 +60,11 @@ const Login = () => {
 
       </div>
 
-      {/* ── Right Panel — Form ── */}
+      {/* Right Panel */}
       <div className="login-right">
         <div className="login-form-wrap">
 
-          {/* Mobile brand (hidden on desktop) */}
+          {/* Mobile */}
           <div className="login-mobile-brand">
             <div className="login-mobile-brand-icon">F</div>
             <div className="login-mobile-brand-name">Finlytics</div>

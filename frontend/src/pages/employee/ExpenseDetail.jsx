@@ -147,7 +147,7 @@ const ExpenseDetail = () => {
 
           <div className="detail-grid">
 
-            {/* ── Main info card ── */}
+            {/* Main info card */}
             <div className="detail-card">
               <div className="detail-card-title">
                 Expense Information
@@ -251,7 +251,7 @@ const ExpenseDetail = () => {
               )}
             </div>
 
-            {/* ── Timeline sidebar ── */}
+            {/* Timeline sidebar */}
             <div className="timeline-card">
               <div className="timeline-card-title">Status Timeline</div>
 
@@ -290,7 +290,7 @@ const ExpenseDetail = () => {
 
           </div>
 
-          {/* Delete confirm modal — uses myexpenses.css modal-box classes */}
+          {/* Delete confirm modal */}
           {confirmDelete && (
             <div
               className="modal-overlay"

@@ -82,7 +82,7 @@ const Register = () => {
 
       </div>
 
-      {/* ── Right Panel — Form ── */}
+      {/* Right Panel Form */}
       <div className="register-right">
         <div className="register-form-wrap">
 

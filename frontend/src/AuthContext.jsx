@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken]     = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // On app load, restore from localStorage
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUser  = localStorage.getItem("user");
@@ -25,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("user",  JSON.stringify(res.data.user));
     setToken(res.data.token);
     setUser(res.data.user);
-    return res.data.user; // return user so Router can redirect by role
+    return res.data.user;
   };
 
   const register = async (name, email, password) => {

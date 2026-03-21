@@ -26,7 +26,6 @@ import PaidExpenses from "./pages/finance/PaidExpenses";
 import AdminDashboard  from "./pages/admin/Dashboard";
 import UserManagement  from "./pages/admin/UserManagement";
 
-// Redirect to role dashboard after login
 const RoleHome = () => {
   const { user } = useAuth();
   const map = {
@@ -44,7 +43,6 @@ const Router = () => (
     <Route path="/login"    element={<Login />} />
     <Route path="/register" element={<Register />} />
 
-    {/* Root redirect */}
     <Route path="/" element={<ProtectedRoute><RoleHome /></ProtectedRoute>} />
 
     {/* Employee */}
@@ -69,7 +67,6 @@ const Router = () => (
     <Route path="/admin/dashboard" element={<ProtectedRoute role="ADMIN"><AdminDashboard /></ProtectedRoute>} />
     <Route path="/admin/users"     element={<ProtectedRoute role="ADMIN"><UserManagement /></ProtectedRoute>} />
 
-    {/* Catch all */}
     <Route path="*" element={<Navigate to="/login" replace />} />
   </Routes>
 );

@@ -31,7 +31,6 @@ const NotificationBell = () => {
 
   return (
     <>
-      {/* Click-outside backdrop */}
       {open && <div className="notif-backdrop" onClick={close} />}
 
       <div className="notif-anchor">

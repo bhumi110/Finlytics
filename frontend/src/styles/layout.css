@@ -1,11 +1,4 @@
-/* ══════════════════════════════════════════════════════
-   LAYOUT  v7 — Premium Sidebar · Editorial Topbar
-   Aesthetic: Warm dark sidebar, warm cream topbar
-══════════════════════════════════════════════════════ */
 
-/* ════════════════════════════════════════════════════
-   MOBILE HAMBURGER
-════════════════════════════════════════════════════ */
 .mobile-menu-btn {
   position: fixed; top: 14px; left: 14px; z-index: 600;
   width: 40px; height: 40px; border-radius: 10px;
@@ -48,9 +41,6 @@
   color: #fca5a5;
 }
 
-/* ════════════════════════════════════════════════════
-   TOPBAR — warm cream, editorial
-════════════════════════════════════════════════════ */
 .topbar {
   height: var(--topbar-h);
   background: var(--white);
@@ -165,9 +155,6 @@
 }
 .topbar-caret { color: var(--text-4); font-size: 0.5rem; flex-shrink: 0; }
 
-/* ════════════════════════════════════════════════════
-   SIDEBAR — deep dark emerald stage
-════════════════════════════════════════════════════ */
 .sidebar {
   --sb-accent:      #4fc49a;
   --sb-accent-bg:   rgba(79,196,154,0.11);

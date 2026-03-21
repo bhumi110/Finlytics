@@ -100,7 +100,7 @@ const ApprovalDetail = () => {
           {expense && (
             <div className="approval-grid">
 
-              {/* ── Left: Expense details ── */}
+              {/* Left: Expense details */}
               <div className="approval-card">
                 <div className="approval-card-title">
                   Expense Details
@@ -177,7 +177,7 @@ const ApprovalDetail = () => {
                 </div>
               </div>
 
-              {/* ── Right: Reference sidebar ── */}
+              {/* Right: Reference sidebar */}
               <div className="approval-side">
                 <div className="approval-card">
                   <div className="approval-card-title">Reference</div>

@@ -4,7 +4,6 @@ const axiosInstance = axios.create({
   baseURL: "http://localhost:8080",
 });
 
-// Attach token to every request
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -13,7 +12,6 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// If 401, clear storage and go to login
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {

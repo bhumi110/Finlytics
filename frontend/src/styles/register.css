@@ -1,7 +1,3 @@
-/* ══════════════════════════════════════════════════════
-   FINLYTICS — Register  v12
-   Aesthetic: mirrors Login · Luxury Editorial · Dark Stage
-══════════════════════════════════════════════════════ */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -16,9 +12,7 @@
   font-family: 'Syne', sans-serif;
 }
 
-/* ════════════════════════
-   LEFT PANEL — Brand Stage
-════════════════════════ */
+
 .register-left {
   position: relative;
   display: flex;

@@ -193,7 +193,7 @@ const FinancePending = () => {
             </div>
           )}
 
-          {/* Section 1 — Needs Finance Approval */}
+          {/* Section 1 Needs Finance Approval */}
           <div style={{ marginBottom: 28 }}>
             <div className="finance-section-label">
               <span className="finance-section-title">Awaiting Finance Approval</span>
@@ -204,7 +204,7 @@ const FinancePending = () => {
             </div>
           </div>
 
-          {/* Section 2 — Ready to Pay */}
+          {/* Section 2 Ready to Pay */}
           <div>
             <div className="finance-section-label">
               <span className="finance-section-title">Finance Approved — Ready to Pay</span>
