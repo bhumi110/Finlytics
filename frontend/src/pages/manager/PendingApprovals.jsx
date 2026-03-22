@@ -7,7 +7,7 @@ import {
   managerApprove,
   managerReject,
 } from "../../api/api";
-import { formatCurrency, formatDate } from "../../utils/format";
+import { formatCurrency, formatDate } from "../../utils/format.js";
 import { useAuth } from "../../AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/dashboard.css";

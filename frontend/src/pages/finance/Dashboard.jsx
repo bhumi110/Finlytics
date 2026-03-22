@@ -5,7 +5,7 @@ import Sidebar     from "../../components/Sidebar";
 import Topbar      from "../../components/Topbar";
 import StatusBadge from "../../components/StatusBadge";
 import { getFinancePending, getFinancePaid } from "../../api/api";
-import { formatCurrency, formatDate } from "../../utils/format";
+import { formatCurrency, formatDate } from "../../utils/format.js";
 import "../../styles/dashboard.css";
 
 const FinanceDashboard = () => {

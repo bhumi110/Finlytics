@@ -10,7 +10,7 @@ import {
   financeReject,
   markAsPaid,
 } from "../../api/api";
-import { formatCurrency, formatDate } from "../../utils/format";
+import { formatCurrency, formatDate } from "../../utils/format.js";
 import "../../styles/dashboard.css";
 import "../../styles/financepending.css";
 

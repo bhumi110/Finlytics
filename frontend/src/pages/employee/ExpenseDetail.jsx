@@ -10,7 +10,7 @@ import {
   submitExpense,
   deleteExpense,
 } from "../../api/api";
-import { formatCurrency, formatDate } from "../../utils/format";
+import { formatCurrency, formatDate } from "../../utils/format.js";
 import "../../styles/expensedetail.css";
 
 const CATEGORIES = [
