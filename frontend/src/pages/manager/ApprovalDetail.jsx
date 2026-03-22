@@ -147,7 +147,7 @@ const ApprovalDetail = () => {
                   <div className="approval-notes-label" style={{ marginBottom: 10 }}>Receipt</div>
                   {expense.receiptUrl ? (
                     <a
-                      href={`http://localhost:8080${expense.receiptUrl}`}
+                      href={`https://finlytics-097n.onrender.com${expense.receiptUrl}`}
                       target="_blank"
                       rel="noreferrer"
                       className="approval-receipt-link"
