@@ -6,10 +6,15 @@ const app=express();
 const path = require("path");
 
 app.use(express.json());
-app.use(cors({
-  origin: [ "https://finlytics-tau.vercel.app/"],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://finlytics-tau.vercel.app"
+    ],
+    credentials: true,
+  })
+);
 app.use(helmet());
 app.use(morgan("dev"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
