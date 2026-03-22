@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://finlytics-097n.onrender.com" ,
+  baseURL: ["https://finlytics-097n.onrender.com","https://localhost:8080"] ,
 });
 
 axiosInstance.interceptors.request.use((config) => {
