@@ -7,7 +7,7 @@ const path = require("path");
 
 app.use(express.json());
 app.use(cors({
-  origin: ["http://localhost:5173", "https://finlytics-tau.vercel.app/"],
+  origin: [ "https://finlytics-tau.vercel.app/"],
   credentials: true,
 }));
 app.use(helmet());
